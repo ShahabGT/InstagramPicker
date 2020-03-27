@@ -1,0 +1,35 @@
+<resources>
+    <string name="app_name">InstagramPicker</string>
+    <string name="filter_normal">Normal</string>
+    <string name="activity_title_main">Filters</string>
+    <string name="filters">FILTERS</string>
+    <string name="edit">EDIT</string>
+    <string name="lbl_brightness">BRIGHTNESS</string>
+    <string name="lbl_contrast">CONTRAST</string>
+    <string name="lbl_saturation">SATURATION</string>
+    <string name="tab_filters">FILTERS</string>
+    <string name="tab_edit">EDIT</string>
+    <string name="Next">Next</string>
+
+    <string name="camera_permission_title">Camera Permission</string>
+    <string name="camera_permission_message">This permission is needed to Take Photos</string>
+    <string name="camera_permission_positive">allow</string>
+    <string name="camera_permission_negative">deny</string>
+    <string name="camera_permission_deny">Enable Permission in Settings</string>
+
+    <string name="storage_permission_title">External Storage Permission</string>
+    <string name="storage_permission_message">This permission is needed to read photos in your phone</string>
+    <string name="storage_permission_positive">allow</string>
+    <string name="storage_permission_negative">deny</string>
+    <string name="storage_permission_deny">Enable Permission in Settings</string>
+
+    <string name="instagrampicker_gallery">Gallery</string>
+    <string name="instagrampicker_gallery_title">Select an Image</string>
+
+    <string name="instagrampicker_camera">Camera</string>
+    <string name="instagrampicker_camera_title">Take an Image</string>
+
+    <color name="filter_label_normal">#8A8889</color>
+    <color name="filter_label_selected">#221F20</color>
+
+</resources>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/bnv_gallery"
+        android:icon="@drawable/vector_gallery"
+        android:title="@string/instagrampicker_gallery" />
+    <item
+        android:id="@+id/bnv_camera"
+        android:icon="@drawable/vector_camera"
+        android:title="@string/instagrampicker_camera" />
+
+</menu>
