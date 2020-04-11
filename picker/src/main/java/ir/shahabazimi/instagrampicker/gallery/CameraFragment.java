@@ -341,12 +341,21 @@ public class CameraFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
+        textureView.setVisibility(View.GONE);
+        stopCamera();
         stopBackgroundThread();
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void onResume() {
         super.onResume();
+        textureView.setVisibility(View.VISIBLE);
+
         startBackgroundThread();
         if(textureView.isAvailable())
             openCamera(null);
