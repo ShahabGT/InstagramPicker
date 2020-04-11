@@ -6,6 +6,15 @@
     style="@style/Theme.MaterialComponents.Light.NoActionBar"
     android:layout_height="match_parent"
     tools:context=".gallery.SelectActivity">
+    <com.google.android.material.appbar.MaterialToolbar
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:popupTheme="@style/AppTheme.PopupOverlay"
+        app:layout_constraintTop_toTopOf="parent"
+        android:id="@+id/select_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        app:menu="@menu/menu_main"/>
 
     <FrameLayout
         android:id="@+id/select_container"
@@ -14,7 +23,7 @@
         app:layout_constraintBottom_toTopOf="@id/select_bnv"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/select_toolbar" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         style="@style/BottomNavigation"

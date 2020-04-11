@@ -15,6 +15,8 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.tmall.ultraviewpager.UltraViewPager;
 import com.tmall.ultraviewpager.transformer.UltraScaleTransformer;
@@ -44,6 +46,9 @@ public class MultiSelectActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_multi_select);
+        Toolbar toolbar = findViewById(R.id.multi_select_toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle(getString(R.string.instagrampicker_multi_select_title));
         finalAddresses = new ArrayList<>();
         finalAddresses.addAll(addresses);
         initViewPager(finalAddresses);

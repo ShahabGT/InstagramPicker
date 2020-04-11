@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
@@ -57,15 +58,16 @@ public class FilterActivity extends AppCompatActivity implements FiltersListFrag
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_filter);
 
+        Toolbar toolbar = findViewById(R.id.filter_toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle(getString(R.string.instagrampicker_filter_title));
+
         viewPager = findViewById(R.id.viewpager);
         tabLayout = findViewById(R.id.tabs);
         imagePreview = findViewById(R.id.image_preview);
 
 
-//        Toolbar toolbar = findViewById(R.id.toolbar);
-//        setSupportActionBar(toolbar);
-//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-//        getSupportActionBar().setTitle(getString(R.string.activity_title_main));
+
 
         setupViewPager(viewPager);
         tabLayout.setupWithViewPager(viewPager);
