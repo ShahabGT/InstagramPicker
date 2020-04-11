@@ -29,6 +29,7 @@
         style="@style/BottomNavigation"
         android:id="@+id/select_bnv"
         android:layout_width="match_parent"
+        app:popupTheme="@style/AppTheme.PopupOverlay"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
