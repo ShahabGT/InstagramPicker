@@ -35,7 +35,7 @@ Step 2. Add the dependency<br>
 Add it in your dependencies section of build.gradle (app level):
 ```
 	dependencies {
-	        implementation 'com.github.ShahabGT:InstagramPicker:1.0.1'
+	        implementation 'com.github.ShahabGT:InstagramPicker:1.0.4'
 	}
 ```
 Step 3. It uses Java 8 so add these lines in build.gardle(app level) in the android tag:
@@ -92,6 +92,9 @@ you can customize the texts in the library using the cheatsheet below:
 
 <string name="instagrampicker_camera">Camera</string>
 <string name="instagrampicker_camera_title">Take an Image</string>
+
+<string name="instagrampicker_multi_select_title">Edit Images</string>
+<string name="instagrampicker_filter_title">Filters</string>
 ```
 # Built With
 
