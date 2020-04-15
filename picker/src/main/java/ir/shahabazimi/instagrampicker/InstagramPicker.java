@@ -26,7 +26,12 @@ public class InstagramPicker {
     public InstagramPicker(Activity activity) {
         this.activity = activity;
     }
-
+    /**
+     * This method won't work anymore please use one of the bellow for single selection or multi selection
+     *
+     * @deprecated use {@link #show(int, int, SingleListener)} ()}
+     * or {@link #show(int, int, int, MultiListener)} instead.
+     */
     @Deprecated
     public void show(int CropXRatio, int CropYRatio, boolean multiSelect, InstagramPickerListener listener) {
         InstagramPicker.x = CropXRatio;
@@ -66,11 +71,14 @@ public class InstagramPicker {
     private BroadcastReceiver br = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            listener.selectedPics(addresses);
-            if (multiSelect)
-                mListener.selectedPics(addresses);
-            else
-                sListener.selectedPic(addresses.get(0));
+            if (listener != null)
+                listener.selectedPics(addresses);
+            else {
+                if (multiSelect)
+                    mListener.selectedPics(addresses);
+                else
+                    sListener.selectedPic(addresses.get(0));
+            }
         }
     };
 
