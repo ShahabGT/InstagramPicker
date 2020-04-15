@@ -16,6 +16,7 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.List;
 
+import ir.shahabazimi.instagrampicker.InstagramPicker;
 import ir.shahabazimi.instagrampicker.R;
 
 
@@ -23,6 +24,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
 
     private List<GalleryModel> list;
     private GalleySelectedListener galleySelectedListener;
+    private int count=0;
 
     private List<String> selectedPics;
 
@@ -31,6 +33,9 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
     GalleryAdapter( List<GalleryModel> list,GalleySelectedListener galleySelectedListener, boolean multiSelect){
         this.list=list;
         this.galleySelectedListener=galleySelectedListener;
+        if(multiSelect) {
+            count = InstagramPicker.numberOfPictures;
+        }
         this.multiSelect=multiSelect;
         selectedPics = new ArrayList<>();
         if(!multiSelect){
@@ -58,18 +63,24 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
         h.bgSelect.setVisibility(model.isSelected() ? View.VISIBLE : View.GONE);
 
         h.itemView.setOnClickListener(v->{
-            if(multiSelect) {
+            if(multiSelect ) {
+
+                if(count==selectedPics.size()){
+                    if(model.isSelected()){
+                        h.bgSelect.setVisibility(View.GONE);
+                        selectedPics.remove(model.getAddress());
+                    }
+                    return;
+                }
 
                 model.setSelected(!model.isSelected());
-
                 h.bgSelect.setVisibility(model.isSelected() ? View.VISIBLE : View.GONE);
 
                 if (model.isSelected()) {
-                   h.bgSelect.setChecked(!h.bgSelect.isChecked());
+                    h.bgSelect.setChecked(!h.bgSelect.isChecked());
                     selectedPics.add(model.getAddress());
                 } else {
                     selectedPics.remove(model.getAddress());
-
                 }
                 galleySelectedListener.onMultiSelect(selectedPics);
 

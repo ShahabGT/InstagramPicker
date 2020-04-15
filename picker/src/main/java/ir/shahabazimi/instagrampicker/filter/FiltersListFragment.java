@@ -34,7 +34,6 @@ public class FiltersListFragment extends Fragment implements ThumbnailsAdapter.T
     }
 
     public FiltersListFragment() {
-        // Required empty public constructor
     }
 
     @Override

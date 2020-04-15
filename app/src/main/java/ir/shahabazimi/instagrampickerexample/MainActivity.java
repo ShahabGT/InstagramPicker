@@ -10,6 +10,7 @@ import java.util.List;
 
 import ir.shahabazimi.instagrampicker.InstagramPicker;
 import ir.shahabazimi.instagrampicker.InstagramPickerListener;
+import ir.shahabazimi.instagrampicker.MultiListener;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -24,11 +25,11 @@ public class MainActivity extends AppCompatActivity {
 
         button.setOnClickListener(w->{
             InstagramPicker a = new InstagramPicker(MainActivity.this);
-            // CropXRatio and CropYRatio are ratio for croping for example if you want to limit the users to
+            // CropXRatio and CropYRatio are ratio for cropping for example if you want to limit the users to
             // only crop in 16:9 put 16,9
 
-            // multiselect allows the user to choose more than on picture
-            a.show(1, 1, true, new InstagramPickerListener() {
+            // numberOfPictures allows the user to choose more than on picture between 2 and 1000
+            a.show(1, 1, 3, new MultiListener() {
                 @Override
                 public void selectedPics(List<String> addresses) {
                     // receive image address in here

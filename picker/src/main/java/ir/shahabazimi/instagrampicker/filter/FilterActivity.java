@@ -60,6 +60,7 @@ public class FilterActivity extends AppCompatActivity implements FiltersListFrag
 
         Toolbar toolbar = findViewById(R.id.filter_toolbar);
         setSupportActionBar(toolbar);
+        assert getSupportActionBar()!=null;
         getSupportActionBar().setTitle(getString(R.string.instagrampicker_filter_title));
 
         viewPager = findViewById(R.id.viewpager);
@@ -76,8 +77,7 @@ public class FilterActivity extends AppCompatActivity implements FiltersListFrag
 
                 renderImage(picAddress);
             } catch (Exception e) {
-                Toast.makeText(this, "SHIT HAPPENED", Toast.LENGTH_SHORT).show();
-                //onBackPressed();
+                e.printStackTrace();
             }
         }, 500);
 
@@ -175,7 +175,7 @@ public class FilterActivity extends AppCompatActivity implements FiltersListFrag
                         SelectActivity.fa.finish();
 
                     } catch (Exception e) {
-
+                        e.printStackTrace();
                     }
 
                     return true;

@@ -62,8 +62,6 @@ import static android.app.Activity.RESULT_OK;
 
 public class CameraFragment extends Fragment {
 
-    public static Bitmap finalImage;
-
     public CameraFragment() {
     }
 
@@ -78,6 +76,7 @@ public class CameraFragment extends Fragment {
     }
 
     private AutoFitTextureView textureView;
+    private Context context;
     private ImageView change, capture;
     private String cameraId;
     private CameraDevice cameraDevice;
@@ -89,7 +88,7 @@ public class CameraFragment extends Fragment {
     private boolean front = false;
     private Handler mBackgroundHandler;
     private HandlerThread mBackgroundThread;
-    CameraDevice.StateCallback stateCallBack = new CameraDevice.StateCallback() {
+    private CameraDevice.StateCallback stateCallBack = new CameraDevice.StateCallback() {
         @Override
         public void onOpened(@NonNull CameraDevice camera) {
             cameraDevice = camera;
@@ -112,6 +111,7 @@ public class CameraFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_camera, container, false);
+        context = getContext();
         ActionBar actionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
         actionBar.setTitle(getString(R.string.instagrampicker_camera_title));
         setHasOptionsMenu(true);
@@ -300,7 +300,7 @@ public class CameraFragment extends Fragment {
             }
 
             if (ActivityCompat.checkSelfPermission(getActivity(),Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(getContext(),"Please Enable Camera Permission",Toast.LENGTH_LONG).show();
+                Toast.makeText(context,"Please Enable Camera Permission",Toast.LENGTH_LONG).show();
                 Intent intent = new Intent();
                 intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
                 Uri uri = Uri.fromParts("package", getActivity().getPackageName(), null);
@@ -313,6 +313,7 @@ public class CameraFragment extends Fragment {
             }
             manager.openCamera(cameraId, stateCallBack, null);
         } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -386,7 +387,9 @@ public class CameraFragment extends Fragment {
                 cameraCaptureSession.close();
                 cameraCaptureSession = null;
             }
-        }catch (Exception e){}
+        }catch (Exception e){
+            e.printStackTrace();
+        }
         finally {
             if (cameraDevice != null) {
                 cameraDevice.close();
@@ -401,7 +404,7 @@ public class CameraFragment extends Fragment {
         int y=InstagramPicker.y;
         CropImage.activity(Uri.fromFile(f))
                 .setAspectRatio(x,y)
-                .start(getContext(), this);
+                .start(context, this);
 
     }
 
@@ -411,7 +414,7 @@ public class CameraFragment extends Fragment {
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
             if (resultCode == RESULT_OK) {
                 Uri resultUri = result.getUri();
-                Intent in = new Intent(getContext(), FilterActivity.class);
+                Intent in = new Intent(context, FilterActivity.class);
                 in.putExtra("uri",resultUri);
                 FilterActivity.picAddress=resultUri;
                 startActivityForResult(in,444);
