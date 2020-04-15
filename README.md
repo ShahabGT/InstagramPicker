@@ -35,7 +35,7 @@ Step 2. Add the dependency<br>
 Add it in your dependencies section of build.gradle (app level):
 ```
 	dependencies {
-	        implementation 'com.github.ShahabGT:InstagramPicker:1.0.4'
+	        implementation 'com.github.ShahabGT:InstagramPicker:1.0.5'
 	}
 ```
 Step 3. It uses Java 8 so add these lines in build.gardle(app level) in the android tag:
@@ -59,18 +59,30 @@ Step 4. Add these activities in your manifest file. in the application tag:
 
 # How to use it
 For using this library just use the code below it is simple and straight forward.
+For single image selection use this:
 ```
 InstagramPicker in = new InstagramPicker('Activity');
-        in.show('X ratio','Y ratio','allow multi select', addresses ->  {
+        in.show('X ratio','Y ratio', address ->  {
 
-               //here you get your selected picture(s) addresses in String format.
-			   // you can convert it to Uri if you want: Uri.parse();
+               //here you get your selected picture address in String format.
+		// you can convert it to Uri if you want: Uri.parse();
+			 
+
+        });
+```
+For multi image selection use this:
+```
+InstagramPicker in = new InstagramPicker('Activity');
+        in.show('X ratio','Y ratio','number of pics', addresses ->  {
+
+               //here you get your selected pictures addresses in array of String
+		// you can convert it to Uri if you want: Uri.parse();
 			 
 
         });
 ```
 X ratio, Y ratio= these two integer variables determines the crop aspect ratio of the picture.<br>
-allow multi select = a boolean variable that allow's user to choose more than one picture<br>
+number of pics = an integer variable that determines the number of pictures that user allowed to pick, a number between 2 and 1000<br>
  
 # Customization
 you can customize the texts in the library using the cheatsheet below:
