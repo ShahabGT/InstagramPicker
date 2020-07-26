@@ -18,7 +18,12 @@ public class MainActivity extends AppCompatActivity {
             // only crop in 16:9 put 16,9
 
             // numberOfPictures allows the user to choose more than on picture between 2 and 1000
-            a.show(1, 1, 3, addresses -> {
+            a.show(1, 1,5, addresses -> {
+                // receive image address in here
+            });
+
+            // this way for just a picture
+            a.show(1, 1, address -> {
                 // receive image address in here
             });
 

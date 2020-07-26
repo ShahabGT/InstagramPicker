@@ -26,6 +26,7 @@ public class InstagramPicker {
     public InstagramPicker(Activity activity) {
         this.activity = activity;
     }
+
     /**
      * This method won't work anymore please use one of the bellow for single selection or multi selection
      *
@@ -54,18 +55,21 @@ public class InstagramPicker {
     }
 
     public void show(int CropXRatio, int CropYRatio, int numberOfPictures, MultiListener listener) {
+        if (numberOfPictures < 2)
+            numberOfPictures = 2;
+        else if (numberOfPictures > 1000)
+            numberOfPictures = 1000;
+
         InstagramPicker.x = CropXRatio;
         InstagramPicker.y = CropYRatio;
-        if (numberOfPictures > 1 && numberOfPictures < 1000) {
-            InstagramPicker.multiSelect = true;
-            InstagramPicker.numberOfPictures = numberOfPictures;
-        } else {
-            InstagramPicker.multiSelect = false;
-        }
+        InstagramPicker.multiSelect = true;
+        InstagramPicker.numberOfPictures = numberOfPictures;
+
         this.mListener = listener;
         Intent in = new Intent(activity, SelectActivity.class);
         activity.startActivity(in);
         activity.registerReceiver(br, new IntentFilter("refreshPlease"));
+
     }
 
     private BroadcastReceiver br = new BroadcastReceiver() {
