@@ -8,7 +8,6 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.view.Menu;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -26,7 +25,6 @@ public class SelectActivity extends AppCompatActivity {
 
     public static Activity fa;
 
-    private BottomNavigationView bnv;
     private static final int CAMERA_PERMISSION_REQ = 236;
     private static final int STORAGE_PERMISSION_REQ = 326;
 
@@ -37,7 +35,7 @@ public class SelectActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.select_toolbar);
         setSupportActionBar(toolbar);
         fa = this;
-        bnv = findViewById(R.id.select_bnv);
+        BottomNavigationView bnv = findViewById(R.id.select_bnv);
 
         bnv.setOnNavigationItemSelectedListener(mi -> {
 
@@ -51,6 +49,8 @@ public class SelectActivity extends AppCompatActivity {
 
             return true;
         });
+        bnv.setOnNavigationItemReselectedListener(mi -> {
+        });
 
         requestStorage();
 
@@ -63,14 +63,9 @@ public class SelectActivity extends AppCompatActivity {
         });
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
 
     private void openCamera() {
-        getSupportFragmentManager().beginTransaction().replace(R.id.select_container, new CameraxFragment())
+        getSupportFragmentManager().beginTransaction().replace(R.id.select_container, new CameraFragment())
                 .commit();
 
     }
