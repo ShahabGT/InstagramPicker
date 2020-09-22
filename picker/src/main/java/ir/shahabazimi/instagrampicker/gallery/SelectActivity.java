@@ -70,7 +70,7 @@ public class SelectActivity extends AppCompatActivity {
     }
 
     private void openCamera() {
-        getSupportFragmentManager().beginTransaction().replace(R.id.select_container, new CameraFragment())
+        getSupportFragmentManager().beginTransaction().replace(R.id.select_container, new CameraxFragment())
                 .commit();
 
     }

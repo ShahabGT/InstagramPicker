@@ -40,9 +40,13 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import com.theartofdev.edmodo.cropper.CropImage;
+
+import org.jetbrains.annotations.NotNull;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -51,6 +55,7 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 import ir.shahabazimi.instagrampicker.InstagramPicker;
@@ -111,8 +116,10 @@ public class CameraFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_camera, container, false);
+
         context = getContext();
-        ActionBar actionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
+        ActionBar actionBar = ((AppCompatActivity) Objects.requireNonNull(getActivity())).getSupportActionBar();
+        assert actionBar != null;
         actionBar.setTitle(getString(R.string.instagrampicker_camera_title));
         setHasOptionsMenu(true);
 
@@ -141,27 +148,23 @@ public class CameraFragment extends Fragment {
     private void takePicture() {
         if (cameraDevice == null)
             return;
-        CameraManager manager = (CameraManager) getActivity().getSystemService(Context.CAMERA_SERVICE);
         try {
+            CameraManager manager = (CameraManager) Objects.requireNonNull(getActivity()).getSystemService(Context.CAMERA_SERVICE);
             CameraCharacteristics characteristics = manager.getCameraCharacteristics(cameraDevice.getId());
-            Size[] jpegSizes = characteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP)
+            Size[] jpegSizes = Objects.requireNonNull(characteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP))
                     .getOutputSizes(ImageFormat.JPEG);
 
-            int width = 1000;
-            int height = 1000;
-            if (jpegSizes != null && jpegSizes.length > 0) {
-//                int i=0;
-//                for (Size s:jpegSizes){
-//                    if(s.getWidth()==s.getHeight())
-//                    {
-//                        width = jpegSizes[i].getWidth();
-//                        height = jpegSizes[i].getHeight();
-//                        break;
-//                    }
-//                    i++;
-//                }
-                width = jpegSizes[0].getWidth();
-                height = jpegSizes[0].getHeight();
+            int width=800;
+            int height=600;
+            if (jpegSizes!=null && jpegSizes.length > 0) {
+                 width = Math.max(jpegSizes[0].getWidth(), jpegSizes[jpegSizes.length - 1].getWidth());
+                 height = Math.max(jpegSizes[0].getHeight(), jpegSizes[jpegSizes.length - 1].getHeight());
+                for (Size jpegSize : jpegSizes) {
+                    if (jpegSize.getWidth() == jpegSize.getHeight()) {
+                        width = jpegSize.getWidth();
+                        height = jpegSize.getHeight();
+                    }
+                }
             }
 
             final ImageReader reader = ImageReader.newInstance(width, height, ImageFormat.JPEG, 1);
@@ -279,7 +282,7 @@ public class CameraFragment extends Fragment {
 
     private void openCamera(@Nullable String id) {
         try {
-            CameraManager manager = (CameraManager) getActivity().getSystemService(Context.CAMERA_SERVICE);
+            CameraManager manager = (CameraManager) Objects.requireNonNull(getActivity()).getSystemService(Context.CAMERA_SERVICE);
 
             cameraIdList = manager.getCameraIdList();
             if (id == null)
@@ -290,6 +293,8 @@ public class CameraFragment extends Fragment {
             CameraCharacteristics characteristics = manager.getCameraCharacteristics(cameraId);
             StreamConfigurationMap map = characteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP);
             assert map != null;
+
+
             imageDimension = map.getOutputSizes(SurfaceTexture.class)[0];
 
             for(Size s : map.getOutputSizes(SurfaceTexture.class)){
@@ -298,6 +303,7 @@ public class CameraFragment extends Fragment {
                     break;
                 }
             }
+            textureView.setAspectRatio(imageDimension.getHeight(),imageDimension.getWidth());
 
             if (ActivityCompat.checkSelfPermission(getActivity(),Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
                 Toast.makeText(context,"Please Enable Camera Permission",Toast.LENGTH_LONG).show();
@@ -319,29 +325,29 @@ public class CameraFragment extends Fragment {
 
     private TextureView.SurfaceTextureListener textureListener = new TextureView.SurfaceTextureListener() {
         @Override
-        public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
+        public void onSurfaceTextureAvailable(@NotNull SurfaceTexture surface, int width, int height) {
             openCamera(null);
         }
 
         @Override
-        public void onSurfaceTextureSizeChanged(SurfaceTexture surface, int width, int height) {
+        public void onSurfaceTextureSizeChanged(@NotNull SurfaceTexture surface, int width, int height) {
 
         }
 
         @Override
-        public boolean onSurfaceTextureDestroyed(SurfaceTexture surface) {
+        public boolean onSurfaceTextureDestroyed(@NotNull SurfaceTexture surface) {
             return false;
         }
 
         @Override
-        public void onSurfaceTextureUpdated(SurfaceTexture surface) {
+        public void onSurfaceTextureUpdated(@NotNull SurfaceTexture surface) {
 
         }
     };
 
     @Override
-    public void onPause() {
-        super.onPause();
+    public void onDestroy() {
+        super.onDestroy();
         textureView.setVisibility(View.GONE);
         stopCamera();
         stopBackgroundThread();

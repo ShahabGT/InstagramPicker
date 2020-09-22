@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import ir.shahabazimi.instagrampicker.gallery.SelectActivity;
@@ -13,7 +14,6 @@ import ir.shahabazimi.instagrampicker.gallery.SelectActivity;
 public class InstagramPicker {
 
     private Activity activity;
-    private InstagramPickerListener listener;
     private MultiListener mListener;
     private SingleListener sListener;
     public static int x;
@@ -27,24 +27,9 @@ public class InstagramPicker {
         this.activity = activity;
     }
 
-    /**
-     * This method won't work anymore please use one of the bellow for single selection or multi selection
-     *
-     * @deprecated use {@link #show(int, int, SingleListener)} ()}
-     * or {@link #show(int, int, int, MultiListener)} instead.
-     */
-    @Deprecated
-    public void show(int CropXRatio, int CropYRatio, boolean multiSelect, InstagramPickerListener listener) {
-        InstagramPicker.x = CropXRatio;
-        InstagramPicker.y = CropYRatio;
-        InstagramPicker.multiSelect = multiSelect;
-        this.listener = listener;
-        Intent in = new Intent(activity, SelectActivity.class);
-        activity.startActivity(in);
-        activity.registerReceiver(br, new IntentFilter("refreshPlease"));
-    }
 
     public void show(int CropXRatio, int CropYRatio, SingleListener listener) {
+        addresses = new ArrayList<>();
         InstagramPicker.x = CropXRatio;
         InstagramPicker.y = CropYRatio;
         InstagramPicker.multiSelect = false;
@@ -55,6 +40,7 @@ public class InstagramPicker {
     }
 
     public void show(int CropXRatio, int CropYRatio, int numberOfPictures, MultiListener listener) {
+        addresses = new ArrayList<>();
         if (numberOfPictures < 2)
             numberOfPictures = 2;
         else if (numberOfPictures > 1000)
@@ -75,14 +61,10 @@ public class InstagramPicker {
     private BroadcastReceiver br = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (listener != null)
-                listener.selectedPics(addresses);
-            else {
-                if (multiSelect)
-                    mListener.selectedPics(addresses);
-                else
-                    sListener.selectedPic(addresses.get(0));
-            }
+            if (multiSelect)
+                mListener.selectedPics(addresses);
+            else
+                sListener.selectedPic(addresses.get(0));
         }
     };
 
