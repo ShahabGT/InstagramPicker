@@ -35,7 +35,7 @@ Step 2. Add the dependency<br>
 Add it in your dependencies section of build.gradle (app level):
 ```
 	dependencies {
-	        implementation 'com.github.ShahabGT:InstagramPicker:2.1.0'
+	        implementation 'com.github.ShahabGT:InstagramPicker:2.1.1'
 	}
 ```
 Step 3. It uses Java 8 so add these lines in build.gardle(app level) in the android tag:
