@@ -1,4 +1,4 @@
-package ir.shahabazimi.instagrampicker;
+package ir.shahabazimi.instagrampicker.classes;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -8,7 +8,7 @@ public class MySharedPreference {
     private SharedPreferences sp;
 
     private MySharedPreference(Context context) {
-        sp = context.getSharedPreferences("InstagramPicker", 0);
+        sp = context.getSharedPreferences("InstagramPickerSharedPreference", 0);
     }
 
     public static MySharedPreference getInstance(Context context) {

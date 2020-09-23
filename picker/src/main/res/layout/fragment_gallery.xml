@@ -27,7 +27,7 @@
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.5" />
 
-        <ir.shahabazimi.instagrampicker.TouchImageView
+        <ir.shahabazimi.instagrampicker.classes.TouchImageView
             android:id="@+id/gallery_view"
             android:layout_width="match_parent"
             android:layout_height="0dp"

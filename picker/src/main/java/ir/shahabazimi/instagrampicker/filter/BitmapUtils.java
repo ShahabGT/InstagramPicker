@@ -150,7 +150,7 @@ public class BitmapUtils {
     }
 
 
-    private static final Bitmap storeThumbnail(
+    private static Bitmap storeThumbnail(
             ContentResolver cr,
             Bitmap source,
             long id,
@@ -185,8 +185,6 @@ public class BitmapUtils {
             thumb.compress(Bitmap.CompressFormat.JPEG, 100, thumbOut);
             thumbOut.close();
             return thumb;
-        } catch (FileNotFoundException ex) {
-            return null;
         } catch (IOException ex) {
             return null;
         }

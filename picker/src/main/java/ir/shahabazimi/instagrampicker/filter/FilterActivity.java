@@ -11,7 +11,6 @@ import android.provider.MediaStore;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -21,26 +20,28 @@ import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 import com.google.android.material.tabs.TabLayout;
 import com.zomato.photofilters.imageprocessors.Filter;
+
+import org.jetbrains.annotations.NotNull;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+
 import ir.shahabazimi.instagrampicker.InstagramPicker;
 import ir.shahabazimi.instagrampicker.R;
-import ir.shahabazimi.instagrampicker.Statics;
-import ir.shahabazimi.instagrampicker.gallery.SelectActivity;
+import ir.shahabazimi.instagrampicker.classes.BackgroundActivity;
+import ir.shahabazimi.instagrampicker.classes.Statics;
+
+import static ir.shahabazimi.instagrampicker.classes.Statics.INTENT_FILTER_ACTION_NAME;
 
 
 public class FilterActivity extends AppCompatActivity implements FiltersListFragment.FiltersListFragmentListener {
 
 
-    public static final int SELECT_GALLERY_IMAGE = 101;
-    public static final String IMAGE_NAME = "dog.jpg";
-
     private ImageView imagePreview;
-    private TabLayout tabLayout;
-    private ViewPager viewPager;
     private Bitmap originalImage;
     private Bitmap filteredImage;
     private Bitmap finalImage;
@@ -63,8 +64,8 @@ public class FilterActivity extends AppCompatActivity implements FiltersListFrag
         assert getSupportActionBar()!=null;
         getSupportActionBar().setTitle(getString(R.string.instagrampicker_filter_title));
 
-        viewPager = findViewById(R.id.viewpager);
-        tabLayout = findViewById(R.id.tabs);
+        ViewPager viewPager = findViewById(R.id.viewpager);
+        TabLayout tabLayout = findViewById(R.id.tabs);
         imagePreview = findViewById(R.id.image_preview);
 
 
@@ -114,6 +115,7 @@ public class FilterActivity extends AppCompatActivity implements FiltersListFrag
             super(manager);
         }
 
+        @NotNull
         @Override
         public Fragment getItem(int position) {
             return mFragmentList.get(position);
@@ -158,7 +160,7 @@ public class FilterActivity extends AppCompatActivity implements FiltersListFrag
             } else {
                     try {
                         Bitmap b = finalImage;
-                        File f = File.createTempFile("mypic", ".jpeg", getExternalFilesDir(Environment.DIRECTORY_PICTURES));
+                        File f = File.createTempFile("my_pic", ".jpeg", getExternalFilesDir(Environment.DIRECTORY_PICTURES));
                         ByteArrayOutputStream bos = new ByteArrayOutputStream();
                         b.compress(Bitmap.CompressFormat.JPEG, 100, bos);
                         byte[] pic = bos.toByteArray();
@@ -170,9 +172,9 @@ public class FilterActivity extends AppCompatActivity implements FiltersListFrag
                             InstagramPicker.addresses = new ArrayList<>();
                         }
                         InstagramPicker.addresses.add(Uri.fromFile(f).toString());
-                        sendBroadcast(new Intent("refreshPlease"));
+                        sendBroadcast(new Intent(INTENT_FILTER_ACTION_NAME));
                         FilterActivity.this.finish();
-                        SelectActivity.fa.finish();
+                        Objects.requireNonNull(BackgroundActivity.getInstance().getActivity()).finish();
 
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -205,6 +207,7 @@ public class FilterActivity extends AppCompatActivity implements FiltersListFrag
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        int SELECT_GALLERY_IMAGE = 101;
         if (resultCode == RESULT_OK && requestCode == SELECT_GALLERY_IMAGE) {
             Bitmap bitmap = BitmapUtils.getBitmapFromGallery(this, data.getData(), 800, 800);
 

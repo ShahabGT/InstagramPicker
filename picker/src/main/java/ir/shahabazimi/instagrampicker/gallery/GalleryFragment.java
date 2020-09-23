@@ -36,7 +36,7 @@ import java.util.Objects;
 
 import ir.shahabazimi.instagrampicker.InstagramPicker;
 import ir.shahabazimi.instagrampicker.R;
-import ir.shahabazimi.instagrampicker.TouchImageView;
+import ir.shahabazimi.instagrampicker.classes.TouchImageView;
 import ir.shahabazimi.instagrampicker.filter.FilterActivity;
 
 import static android.app.Activity.RESULT_OK;

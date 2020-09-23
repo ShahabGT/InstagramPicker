@@ -5,11 +5,14 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-
+import androidx.annotation.NonNull;
 import java.util.ArrayList;
 import java.util.List;
-
+import ir.shahabazimi.instagrampicker.classes.MultiListener;
+import ir.shahabazimi.instagrampicker.classes.SingleListener;
 import ir.shahabazimi.instagrampicker.gallery.SelectActivity;
+
+import static ir.shahabazimi.instagrampicker.classes.Statics.INTENT_FILTER_ACTION_NAME;
 
 public class InstagramPicker {
 
@@ -23,7 +26,7 @@ public class InstagramPicker {
 
     public static List<String> addresses;
 
-    public InstagramPicker(Activity activity) {
+    public InstagramPicker(@NonNull Activity activity) {
         this.activity = activity;
     }
 
@@ -36,7 +39,7 @@ public class InstagramPicker {
         this.sListener = listener;
         Intent in = new Intent(activity, SelectActivity.class);
         activity.startActivity(in);
-        activity.registerReceiver(br, new IntentFilter("refreshPlease"));
+        activity.registerReceiver(br, new IntentFilter(INTENT_FILTER_ACTION_NAME));
     }
 
     public void show(int CropXRatio, int CropYRatio, int numberOfPictures, MultiListener listener) {
@@ -54,7 +57,7 @@ public class InstagramPicker {
         this.mListener = listener;
         Intent in = new Intent(activity, SelectActivity.class);
         activity.startActivity(in);
-        activity.registerReceiver(br, new IntentFilter("refreshPlease"));
+        activity.registerReceiver(br, new IntentFilter(INTENT_FILTER_ACTION_NAME));
 
     }
 
@@ -65,6 +68,7 @@ public class InstagramPicker {
                 mListener.selectedPics(addresses);
             else
                 sListener.selectedPic(addresses.get(0));
+            activity.unregisterReceiver(br);
         }
     };
 

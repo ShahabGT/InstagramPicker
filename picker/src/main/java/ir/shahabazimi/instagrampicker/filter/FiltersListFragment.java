@@ -23,7 +23,6 @@ import ir.shahabazimi.instagrampicker.R;
 
 
 public class FiltersListFragment extends Fragment implements ThumbnailsAdapter.ThumbnailsAdapterListener {
-    private RecyclerView recyclerView;
     private ThumbnailsAdapter mAdapter;
     private List<ThumbnailItem> thumbnailItemList;
     private FiltersListFragmentListener listener;
@@ -47,7 +46,7 @@ public class FiltersListFragment extends Fragment implements ThumbnailsAdapter.T
         View view = inflater.inflate(R.layout.fragment_filters_list, container, false);
         activity=getActivity();
 
-        recyclerView = view.findViewById(R.id.recycler_view);
+        RecyclerView recyclerView = view.findViewById(R.id.recycler_view);
         thumbnailItemList = new ArrayList<>();
         mAdapter = new ThumbnailsAdapter(getActivity(), thumbnailItemList, this);
 
@@ -70,7 +69,7 @@ public class FiltersListFragment extends Fragment implements ThumbnailsAdapter.T
             Bitmap thumbImage;
 
             if (bitmap == null) {
-                thumbImage = BitmapUtils.getBitmapFromAssets(activity, FilterActivity.IMAGE_NAME, 100, 100);
+                return;
             } else {
                 thumbImage = Bitmap.createScaledBitmap(bitmap, 100, 100, false);
             }
@@ -81,7 +80,6 @@ public class FiltersListFragment extends Fragment implements ThumbnailsAdapter.T
             ThumbnailsManager.clearThumbs();
             thumbnailItemList.clear();
 
-            // add normal bitmap first
             ThumbnailItem thumbnailItem = new ThumbnailItem();
             thumbnailItem.image = thumbImage;
             thumbnailItem.filterName = getString(R.string.filter_normal);

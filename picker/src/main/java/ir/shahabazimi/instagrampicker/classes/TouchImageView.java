@@ -1,4 +1,4 @@
-package ir.shahabazimi.instagrampicker;
+package ir.shahabazimi.instagrampicker.classes;
 
 
 import android.annotation.TargetApi;
@@ -32,7 +32,7 @@ public class TouchImageView extends androidx.appcompat.widget.AppCompatImageView
     private static final float SUPER_MAX_MULTIPLIER = 1.25f;
     private float normalizedScale;
     private Matrix matrix, prevMatrix;
-    private static enum State { NONE, DRAG, ZOOM, FLING, ANIMATE_ZOOM };
+    private enum State { NONE, DRAG, ZOOM, FLING, ANIMATE_ZOOM }
     private State state;
 
     private float minScale;

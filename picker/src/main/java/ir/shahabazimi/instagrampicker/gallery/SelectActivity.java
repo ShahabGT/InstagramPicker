@@ -1,7 +1,6 @@
 package ir.shahabazimi.instagrampicker.gallery;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -9,24 +8,20 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
-
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-
-import ir.shahabazimi.instagrampicker.MySharedPreference;
+import ir.shahabazimi.instagrampicker.classes.BackgroundActivity;
+import ir.shahabazimi.instagrampicker.classes.MySharedPreference;
 import ir.shahabazimi.instagrampicker.R;
 
 public class SelectActivity extends AppCompatActivity {
 
-    public static Activity fa;
-
-    private static final int CAMERA_PERMISSION_REQ = 236;
-    private static final int STORAGE_PERMISSION_REQ = 326;
+    private final int CAMERA_PERMISSION_REQ = 236;
+    private final int STORAGE_PERMISSION_REQ = 326;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,7 +29,7 @@ public class SelectActivity extends AppCompatActivity {
         setContentView(R.layout.activity_select);
         Toolbar toolbar = findViewById(R.id.select_toolbar);
         setSupportActionBar(toolbar);
-        fa = this;
+        BackgroundActivity.getInstance().setActivity(this);
         BottomNavigationView bnv = findViewById(R.id.select_bnv);
 
         bnv.setOnNavigationItemSelectedListener(mi -> {

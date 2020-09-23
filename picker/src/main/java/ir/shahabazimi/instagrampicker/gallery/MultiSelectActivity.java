@@ -12,7 +12,6 @@ import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -30,13 +29,15 @@ import java.util.Objects;
 
 import ir.shahabazimi.instagrampicker.InstagramPicker;
 import ir.shahabazimi.instagrampicker.R;
-import ir.shahabazimi.instagrampicker.Statics;
+import ir.shahabazimi.instagrampicker.classes.BackgroundActivity;
+import ir.shahabazimi.instagrampicker.classes.Statics;
 import ir.shahabazimi.instagrampicker.filter.FilterActivity;
+
+import static ir.shahabazimi.instagrampicker.classes.Statics.INTENT_FILTER_ACTION_NAME;
 
 
 public class MultiSelectActivity extends AppCompatActivity {
 
-    private MultiSelectImageAdapter adapter;
     public static List<String> addresses;
     private List<String> finalAddresses;
     private int position = -1;
@@ -48,7 +49,7 @@ public class MultiSelectActivity extends AppCompatActivity {
         setContentView(R.layout.activity_multi_select);
         Toolbar toolbar = findViewById(R.id.multi_select_toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle(getString(R.string.instagrampicker_multi_select_title));
+        Objects.requireNonNull(getSupportActionBar()).setTitle(getString(R.string.instagrampicker_multi_select_title));
         finalAddresses = new ArrayList<>();
         finalAddresses.addAll(addresses);
         initViewPager(finalAddresses);
@@ -56,13 +57,13 @@ public class MultiSelectActivity extends AppCompatActivity {
 
     }
 
-    private void initViewPager(List<String> addressesx) {
+    private void initViewPager(List<String> addressesList) {
         UltraViewPager ultraViewPager = findViewById(R.id.multi_select_pager);
         ultraViewPager.setScrollMode(UltraViewPager.ScrollMode.HORIZONTAL);
-        adapter = new MultiSelectImageAdapter(this, addressesx, (a, p) -> {
+        MultiSelectImageAdapter adapter = new MultiSelectImageAdapter(this, addressesList, (a, p) -> {
             position = p;
             CropImage.activity(Uri.parse(a))
-                    .setAspectRatio(4,3)
+                    .setAspectRatio(4, 3)
                     .start(this);
 
         });
@@ -128,9 +129,9 @@ public class MultiSelectActivity extends AppCompatActivity {
                 InstagramPicker.addresses = new ArrayList<>();
             }
             InstagramPicker.addresses= finalAddresses;
-            sendBroadcast(new Intent("refreshPlease"));
+            sendBroadcast(new Intent(INTENT_FILTER_ACTION_NAME));
             MultiSelectActivity.this.finish();
-            SelectActivity.fa.finish();
+            Objects.requireNonNull(BackgroundActivity.getInstance().getActivity()).finish();
 
             return true;
         }
@@ -151,9 +152,6 @@ public class MultiSelectActivity extends AppCompatActivity {
                 FilterActivity.picAddress = resultUri;
                 FilterActivity.position = position;
                 startActivityForResult(in, 123);
-
-            } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
-                Toast.makeText(this, "error", Toast.LENGTH_SHORT).show();
 
             }
         }

@@ -1,4 +1,4 @@
-package ir.shahabazimi.instagrampicker;
+package ir.shahabazimi.instagrampicker.classes;
 
 import java.util.List;
 
