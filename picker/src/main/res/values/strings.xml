@@ -29,6 +29,9 @@
     <string name="instagrampicker_camera">Camera</string>
     <string name="instagrampicker_camera_title">Capture</string>
 
+    <string name="instagrampicker_crop_title">Crop</string>
+
+
     <string name="instagrampicker_multi_select_title">Edit Images</string>
     <string name="instagrampicker_filter_title">Filters</string>
 

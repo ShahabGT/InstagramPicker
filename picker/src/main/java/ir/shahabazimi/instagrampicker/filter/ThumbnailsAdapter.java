@@ -18,16 +18,14 @@ import ir.shahabazimi.instagrampicker.R;
 
 public class ThumbnailsAdapter extends RecyclerView.Adapter<ThumbnailsAdapter.MyViewHolder> {
 
-    private List<ThumbnailItem> thumbnailItemList;
-    private ThumbnailsAdapterListener listener;
-    private Context mContext;
+    private final List<ThumbnailItem> thumbnailItemList;
+    private final ThumbnailsAdapterListener listener;
+    private final Context mContext;
     private int selectedIndex = 0;
 
     static class MyViewHolder extends RecyclerView.ViewHolder {
-        private ImageView thumbnail;
-
-        private TextView filterName;
-
+        private final ImageView thumbnail;
+        private final TextView filterName;
          MyViewHolder(View view) {
             super(view);
             filterName = view.findViewById(R.id.filter_name);
@@ -45,10 +43,8 @@ public class ThumbnailsAdapter extends RecyclerView.Adapter<ThumbnailsAdapter.My
     @Override
     @NonNull
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.thumbnail_list_item, parent, false);
-
-        return new MyViewHolder(itemView);
+        return new MyViewHolder(LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.thumbnail_list_item, parent, false));
     }
 
     @Override

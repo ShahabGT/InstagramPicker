@@ -1,26 +1,24 @@
 package ir.shahabazimi.instagrampicker.gallery
 
 import android.annotation.SuppressLint
-import android.app.Activity
-import android.content.Context
+import android.app.Activity.RESULT_OK
 import android.content.Intent
+import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
-import android.view.MotionEvent
-import android.view.View
-import android.view.ViewTreeObserver
+import android.view.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.*
 import androidx.camera.core.ImageCapture.*
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
-import com.theartofdev.edmodo.cropper.CropImage
+import com.yalantis.ucrop.UCrop
 import ir.shahabazimi.instagrampicker.InstagramPicker
 import ir.shahabazimi.instagrampicker.R
+import ir.shahabazimi.instagrampicker.classes.Statics
+import ir.shahabazimi.instagrampicker.databinding.FragmentCameraBinding
 import ir.shahabazimi.instagrampicker.filter.FilterActivity
-import kotlinx.android.synthetic.main.fragment_camera.*
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
@@ -35,20 +33,14 @@ enum class FlashMode {
 
 class CameraFragment : Fragment(R.layout.fragment_camera) {
 
-
     companion object {
         private const val FILENAME_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSS"
     }
 
-    private lateinit var ctx: Context
-    private lateinit var act: FragmentActivity
-
-    private var isfront = false
-
+    private lateinit var b: FragmentCameraBinding
+    private var isFront = false
     private var imageCapture: ImageCapture? = null
-
     private var flash = FlashMode.FLASH_OFF
-
     private lateinit var outputDirectory: File
     private lateinit var cameraExecutor: ExecutorService
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -56,18 +48,22 @@ class CameraFragment : Fragment(R.layout.fragment_camera) {
         setHasOptionsMenu(false)
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        b = FragmentCameraBinding.inflate(inflater, container, false)
+        return b.root
+    }
+
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
         val actionBar = (activity as AppCompatActivity).supportActionBar
         actionBar?.title = getString(R.string.instagrampicker_camera_title)
-        ctx = requireContext()
-        act = requireActivity()
 
         startCamera(CameraSelector.DEFAULT_BACK_CAMERA)
-        c_capture.setOnClickListener { takePhoto() }
+        b.cCapture.setOnClickListener { takePhoto() }
 
-        c_change.setOnClickListener {
-            isfront = if (isfront) {
+        b.cChange.setOnClickListener {
+            isFront = if (isFront) {
                 startCamera(CameraSelector.DEFAULT_BACK_CAMERA)
                 false
             } else {
@@ -76,64 +72,57 @@ class CameraFragment : Fragment(R.layout.fragment_camera) {
             }
         }
 
-        c_flash.setOnClickListener {
+        b.cFlash.setOnClickListener {
             when (flash) {
                 FlashMode.FLASH_OFF -> {
                     flash = FlashMode.FLASH_AUTO
-                    c_flash.setImageResource(R.mipmap.ic_flash_auto)
+                    b.cFlash.setImageResource(R.mipmap.ic_flash_auto)
                 }
                 FlashMode.FLASH_AUTO -> {
                     flash = FlashMode.FLASH_ON
-                    c_flash.setImageResource(R.mipmap.ic_flash_on)
+                    b.cFlash.setImageResource(R.mipmap.ic_flash_on)
                 }
                 FlashMode.FLASH_ON -> {
                     flash = FlashMode.FLASH_OFF
-                    c_flash.setImageResource(R.mipmap.ic_flash_off)
+                    b.cFlash.setImageResource(R.mipmap.ic_flash_off)
                 }
             }
 
         }
 
         outputDirectory = getOutputDirectory()
-
         cameraExecutor = Executors.newSingleThreadExecutor()
     }
 
     @SuppressLint("ClickableViewAccessibility")
     private fun startCamera(cameraSelector: CameraSelector) {
-        val cameraProviderFuture = ProcessCameraProvider.getInstance(act)
-
+        val cameraProviderFuture = ProcessCameraProvider.getInstance(requireActivity())
         cameraProviderFuture.addListener({
             val cameraProvider: ProcessCameraProvider = cameraProviderFuture.get()
 
             val preview = Preview.Builder()
                     .build()
                     .also {
-                        it.setSurfaceProvider(c_viewFinder.surfaceProvider)
+                        it.setSurfaceProvider(b.cViewFinder.surfaceProvider)
                     }
-
-
-
-
-
             imageCapture = Builder()
                     .build()
             try {
                 cameraProvider.unbindAll()
 
-               val camera =  cameraProvider.bindToLifecycle(
-                        act, cameraSelector, preview, imageCapture)
+                val camera = cameraProvider.bindToLifecycle(
+                        requireActivity(), cameraSelector, preview, imageCapture)
 
-                c_viewFinder.afterMeasured {
-                    c_viewFinder.setOnTouchListener { _, event ->
+                b.cViewFinder.afterMeasured {
+                    b.cViewFinder.setOnTouchListener { _, event ->
                         return@setOnTouchListener when (event.action) {
                             MotionEvent.ACTION_DOWN -> {
                                 true
                             }
                             MotionEvent.ACTION_UP -> {
-                                c_focus.visibility=View.VISIBLE
+                                b.cFocus.visibility = View.VISIBLE
                                 val factory: MeteringPointFactory = SurfaceOrientedMeteringPointFactory(
-                                        c_viewFinder.width.toFloat(), c_viewFinder.height.toFloat()
+                                        b.cViewFinder.width.toFloat(), b.cViewFinder.height.toFloat()
                                 )
                                 val autoFocusPoint = factory.createPoint(event.x, event.y)
                                 try {
@@ -146,19 +135,20 @@ class CameraFragment : Fragment(R.layout.fragment_camera) {
                                                 disableAutoCancel()
                                             }.build()
                                     )
-                                    c_focus.translationX=event.x-(c_focus.width/2)
-                                    c_focus.translationY=event.y-(c_focus.height/2)
-                                } catch (e: CameraInfoUnavailableException) { }
+                                    b.cFocus.translationX = event.x - (b.cFocus.width / 2)
+                                    b.cFocus.translationY = event.y - (b.cFocus.height / 2)
+                                } catch (e: CameraInfoUnavailableException) {
+                                }
                                 true
                             }
-                            else -> false // Unhandled event.
+                            else -> false
                         }
                     }
                 }
             } catch (exc: Exception) {
             }
 
-        }, ContextCompat.getMainExecutor(act))
+        }, ContextCompat.getMainExecutor(requireActivity()))
     }
 
     private inline fun View.afterMeasured(crossinline block: () -> Unit) {
@@ -188,10 +178,10 @@ class CameraFragment : Fragment(R.layout.fragment_camera) {
             FlashMode.FLASH_ON -> imageCapture.flashMode = FLASH_MODE_ON
             FlashMode.FLASH_OFF -> imageCapture.flashMode = FLASH_MODE_OFF
             FlashMode.FLASH_AUTO -> imageCapture.flashMode = FLASH_MODE_AUTO
-
         }
+
         imageCapture.takePicture(
-                outputOptions, ContextCompat.getMainExecutor(ctx), object : OnImageSavedCallback {
+                outputOptions, ContextCompat.getMainExecutor(context), object : OnImageSavedCallback {
             override fun onError(exc: ImageCaptureException) {
             }
 
@@ -204,30 +194,33 @@ class CameraFragment : Fragment(R.layout.fragment_camera) {
     private fun startCropping(f: File) {
         val x = InstagramPicker.x
         val y = InstagramPicker.y
-        CropImage.activity(Uri.fromFile(f))
-                .setAspectRatio(x, y)
-                .start(ctx, this)
+        val options = UCrop.Options()
+        options.setToolbarTitle(getString(R.string.instagrampicker_crop_title))
+        options.setCompressionFormat(Bitmap.CompressFormat.JPEG)
+        options.withMaxResultSize(2000,2000)
+        UCrop.of(Uri.fromFile(f), Uri.fromFile(File(requireActivity().cacheDir, Statics.getCurrentDate())))
+                .withAspectRatio(x, y)
+                .withOptions(options)
+                .start(requireContext(), this)
+
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
-            val result = CropImage.getActivityResult(data)
-            if (resultCode == Activity.RESULT_OK) {
-                val resultUri = result.uri
-                val `in` = Intent(ctx, FilterActivity::class.java)
-                `in`.putExtra("uri", resultUri)
-                FilterActivity.picAddress = resultUri
-                startActivityForResult(`in`, 444)
-            }
+        if (resultCode == RESULT_OK && requestCode == UCrop.REQUEST_CROP && data!=null) {
+            val resultUri = UCrop.getOutput(data)
+            val `in` = Intent(requireContext(), FilterActivity::class.java)
+            `in`.putExtra("uri", resultUri)
+            FilterActivity.picAddress = resultUri
+            startActivityForResult(`in`, 444)
         }
     }
 
     private fun getOutputDirectory(): File {
-        val mediaDir = act.externalMediaDirs.firstOrNull()?.let {
+        val mediaDir = requireActivity().externalMediaDirs.firstOrNull()?.let {
             File(it, resources.getString(R.string.app_name)).apply { mkdirs() }
         }
         return if (mediaDir != null && mediaDir.exists())
-            mediaDir else act.filesDir
+            mediaDir else requireActivity().filesDir
     }
 
     override fun onDestroy() {

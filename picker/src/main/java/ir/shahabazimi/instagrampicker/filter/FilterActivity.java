@@ -68,9 +68,6 @@ public class FilterActivity extends AppCompatActivity implements FiltersListFrag
         TabLayout tabLayout = findViewById(R.id.tabs);
         imagePreview = findViewById(R.id.image_preview);
 
-
-
-
         setupViewPager(viewPager);
         tabLayout.setupWithViewPager(viewPager);
         new Handler().postDelayed(() -> {
@@ -112,7 +109,7 @@ public class FilterActivity extends AppCompatActivity implements FiltersListFrag
         private final List<String> mFragmentTitleList = new ArrayList<>();
 
         ViewPagerAdapter(FragmentManager manager) {
-            super(manager);
+            super(manager,BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
         }
 
         @NotNull
@@ -156,7 +153,6 @@ public class FilterActivity extends AppCompatActivity implements FiltersListFrag
                 i.putExtra("position", position);
                 sendBroadcast(i);
                 FilterActivity.this.finish();
-                return true;
             } else {
                     try {
                         Bitmap b = finalImage;
@@ -176,13 +172,10 @@ public class FilterActivity extends AppCompatActivity implements FiltersListFrag
                         FilterActivity.this.finish();
                         Objects.requireNonNull(BackgroundActivity.getInstance().getActivity()).finish();
 
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-
-                    return true;
+                    } catch (Exception ignored) { }
 
             }
+            return true;
 
 
         }
@@ -197,8 +190,6 @@ public class FilterActivity extends AppCompatActivity implements FiltersListFrag
         finalImage = originalImage.copy(Bitmap.Config.ARGB_8888, true);
         imagePreview.setImageBitmap(originalImage);
         bitmap.recycle();
-
-        // render selected image thumbnails
         filtersListFragment.prepareThumbnail(originalImage);
 
 
@@ -209,15 +200,12 @@ public class FilterActivity extends AppCompatActivity implements FiltersListFrag
         super.onActivityResult(requestCode, resultCode, data);
         int SELECT_GALLERY_IMAGE = 101;
         if (resultCode == RESULT_OK && requestCode == SELECT_GALLERY_IMAGE) {
-            Bitmap bitmap = BitmapUtils.getBitmapFromGallery(this, data.getData(), 800, 800);
-
-
+            Bitmap bitmap = BitmapUtils.getBitmapFromGallery(this, data.getData());
             originalImage = bitmap.copy(Bitmap.Config.ARGB_8888, true);
             filteredImage = originalImage.copy(Bitmap.Config.ARGB_8888, true);
             finalImage = originalImage.copy(Bitmap.Config.ARGB_8888, true);
             imagePreview.setImageBitmap(originalImage);
             bitmap.recycle();
-
             filtersListFragment.prepareThumbnail(originalImage);
         } else {
             onBackPressed();

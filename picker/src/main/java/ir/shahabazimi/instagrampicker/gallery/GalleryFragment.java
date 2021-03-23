@@ -17,18 +17,20 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.exifinterface.media.ExifInterface;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.theartofdev.edmodo.cropper.CropImage;
+import com.yalantis.ucrop.UCrop;
+import com.yalantis.ucrop.UCrop.Options;
 
+import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +38,7 @@ import java.util.Objects;
 
 import ir.shahabazimi.instagrampicker.InstagramPicker;
 import ir.shahabazimi.instagrampicker.R;
+import ir.shahabazimi.instagrampicker.classes.Statics;
 import ir.shahabazimi.instagrampicker.classes.TouchImageView;
 import ir.shahabazimi.instagrampicker.filter.FilterActivity;
 
@@ -52,7 +55,7 @@ public class GalleryFragment extends Fragment {
     private ImageView multiSelectBtn;
     private TouchImageView preview;
     private boolean multiSelect = false;
-    private List<GalleryModel> data = new ArrayList<>();
+    private final List<GalleryModel> data = new ArrayList<>();
     private String selectedPic = "";
     private List<String> selectedPics;
     private Context context;
@@ -84,7 +87,6 @@ public class GalleryFragment extends Fragment {
             adapter = new GalleryAdapter(data, new GalleySelectedListener() {
                 @Override
                 public void onSingleSelect(String address) {
-                    // preview.setImageURI(Uri.parse(address));
                     try {
                         preview.setImageBitmap(scale(address));
                     } catch (Exception e) {
@@ -98,11 +100,9 @@ public class GalleryFragment extends Fragment {
                 public void onMultiSelect(List<String> addresses) {
                     if (!addresses.isEmpty()) {
                         selectedPic = "";
-                        //  preview.setImageURI(Uri.parse(addresses.get(addresses.size() - 1)));
                         try {
                             preview.setImageBitmap(scale(addresses.get(addresses.size() - 1)));
-                        } catch (Exception e) {
-                            e.printStackTrace();
+                        } catch (Exception ignored) {
                         }
                         selectedPics = addresses;
                     }
@@ -111,7 +111,7 @@ public class GalleryFragment extends Fragment {
             }, multiSelect);
             recyclerView.setAdapter(adapter);
             adapter.notifyDataSetChanged();
-            recyclerView.getLayoutManager().scrollToPosition(positionView);
+            Objects.requireNonNull(recyclerView.getLayoutManager()).scrollToPosition(positionView);
         });
 
         preview = v.findViewById(R.id.gallery_view);
@@ -122,7 +122,6 @@ public class GalleryFragment extends Fragment {
         adapter = new GalleryAdapter(data, new GalleySelectedListener() {
             @Override
             public void onSingleSelect(String address) {
-                // preview.setImageURI(Uri.parse(address));
                 try {
                     preview.setImageBitmap(scale(address));
                 } catch (Exception e) {
@@ -135,7 +134,6 @@ public class GalleryFragment extends Fragment {
             public void onMultiSelect(List<String> addresses) {
                 selectedPic = "";
                 if (!addresses.isEmpty()) {
-                    //   preview.setImageURI(Uri.parse(addresses.get(0)));
                     try {
                         preview.setImageBitmap(scale(addresses.get(0)));
                     } catch (Exception e) {
@@ -155,39 +153,37 @@ public class GalleryFragment extends Fragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
-            CropImage.ActivityResult result = CropImage.getActivityResult(data);
-            if (resultCode == RESULT_OK) {
-                Uri resultUri = result.getUri();
-                Intent in = new Intent(getContext(), FilterActivity.class);
-                in.putExtra("uri", resultUri);
-                FilterActivity.picAddress = resultUri;
-                startActivity(in);
-            } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
-                Exception error = result.getError();
-                Toast.makeText(getContext(), error.getMessage(), Toast.LENGTH_SHORT).show();
-
-            }
+        if (resultCode == RESULT_OK && requestCode == UCrop.REQUEST_CROP && data != null) {
+            Uri resultUri = UCrop.getOutput(data);
+            Intent in = new Intent(getContext(), FilterActivity.class);
+            in.putExtra("uri", resultUri);
+            FilterActivity.picAddress = resultUri;
+            startActivity(in);
         }
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-
+        Options options = new UCrop.Options();
+        options.setCompressionFormat(Bitmap.CompressFormat.JPEG);
+        options.withMaxResultSize(2000, 2000);
+        options.setToolbarTitle(getString(R.string.instagrampicker_crop_title));
         if (id == R.id.action_open) {
-            int x = InstagramPicker.x;
-            int y = InstagramPicker.y;
+            float x = InstagramPicker.x;
+            float y = InstagramPicker.y;
 
 
             if (!selectedPic.isEmpty()) {
-                CropImage.activity(Uri.parse(selectedPic))
-                        .setAspectRatio(x, y)
+                UCrop.of(Uri.parse(selectedPic), Uri.fromFile(new File(requireActivity().getCacheDir(), Statics.getCurrentDate())))
+                        .withAspectRatio(x, y)
+                        .withOptions(options)
                         .start(context, this);
-            } else if (selectedPics.size() == 1) {
 
-                CropImage.activity(Uri.parse(selectedPics.get(0)))
-                        .setAspectRatio(x, y)
+            } else if (selectedPics.size() == 1) {
+                UCrop.of(Uri.parse(selectedPics.get(0)), Uri.fromFile(new File(requireActivity().getCacheDir(), Statics.getCurrentDate())))
+                        .withAspectRatio(x, y)
+                        .withOptions(options)
                         .start(context, this);
             } else if (selectedPics.size() > 1) {
                 Intent i = new Intent(getActivity(), MultiSelectActivity.class);
@@ -209,20 +205,21 @@ public class GalleryFragment extends Fragment {
         super.onCreateOptionsMenu(menu, inflater);
     }
 
-    private int getOrientation(Context context, Uri photoUri) {
-        Cursor cursor = context.getContentResolver().query(photoUri,
-                new String[]{MediaStore.Images.ImageColumns.ORIENTATION}, null, null, null);
-        if (cursor != null) {
-            if (cursor.getCount() != 1) {
-                cursor.close();
-                return -1;
+    private int getOrientation(Uri filepath) {
+        try {
+            switch (new ExifInterface(filepath.getPath()).getAttributeInt(ExifInterface.TAG_ORIENTATION, -1)) {
+                case ExifInterface.ORIENTATION_ROTATE_90:
+                    return 90;
+                case ExifInterface.ORIENTATION_ROTATE_180:
+                    return 180;
+                case ExifInterface.ORIENTATION_ROTATE_270:
+                    return 270;
+                default:
+                    return 0;
             }
-
-            cursor.moveToFirst();
-            return cursor.getInt(0);
-        } else
+        } catch (Exception e) {
             return -1;
-
+        }
     }
 
     private Bitmap scale(String address) throws Exception {
@@ -234,7 +231,7 @@ public class GalleryFragment extends Fragment {
         is.close();
 
         int rotatedWidth, rotatedHeight;
-        int orientation = getOrientation(context, photoUri);
+        int orientation = getOrientation(photoUri);
 
         if (orientation == 90 || orientation == 270) {
             rotatedWidth = dbo.outHeight;
@@ -272,18 +269,18 @@ public class GalleryFragment extends Fragment {
     }
 
     private void getPicturePaths() {
-        Uri allImagesuri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+        Uri allImagesUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
         String[] projection = {MediaStore.Images.ImageColumns.DATA, MediaStore.Images.Media._ID};
 
         try {
             if (getActivity() != null) {
-                Cursor cursor = getActivity().getContentResolver().query(allImagesuri, projection, null, null, MediaStore.Images.Media.DATE_ADDED);
+                Cursor cursor = getActivity().getContentResolver().query(allImagesUri, projection, null, null, MediaStore.Images.Media.DATE_ADDED);
 
                 if (cursor != null && cursor.moveToFirst()) {
 
                     do {
-                        String datapath = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, cursor.getLong(cursor.getColumnIndex(MediaStore.Images.Media._ID))).toString();
-                        GalleryModel model = new GalleryModel(datapath, false);
+                        String dataPath = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, cursor.getLong(cursor.getColumnIndex(MediaStore.Images.Media._ID))).toString();
+                        GalleryModel model = new GalleryModel(dataPath, false);
 
                         data.add(0, model);
                         adapter.notifyItemInserted(data.size());
@@ -291,23 +288,15 @@ public class GalleryFragment extends Fragment {
                     } while (cursor.moveToNext());
                     if (!data.get(0).getAddress().isEmpty()) {
                         selectedPic = data.get(0).getAddress();
-                        //   preview.setImageURI(Uri.parse(selectedPic));
                         try {
                             preview.setImageBitmap(scale(selectedPic));
-                        } catch (Exception e) {
-                            e.printStackTrace();
+                        } catch (Exception ignored) {
                         }
                     }
                     cursor.close();
                 }
             }
-
-
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception ignored) {
         }
-
     }
-
-
 }

@@ -15,7 +15,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import ir.shahabazimi.instagrampicker.classes.BackgroundActivity;
-import ir.shahabazimi.instagrampicker.classes.MySharedPreference;
+import ir.shahabazimi.instagrampicker.classes.InstaPickerSharedPreference;
 import ir.shahabazimi.instagrampicker.R;
 
 public class SelectActivity extends AppCompatActivity {
@@ -79,7 +79,7 @@ public class SelectActivity extends AppCompatActivity {
     }
 
     private int checkStoragePermission() {
-        return ActivityCompat.checkSelfPermission(SelectActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        return ActivityCompat.checkSelfPermission(SelectActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE);
     }
 
     private void requestPermission() {
@@ -90,7 +90,7 @@ public class SelectActivity extends AppCompatActivity {
 
     private void requestStoragePermission() {
         ActivityCompat.requestPermissions(SelectActivity.this,
-                new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
                 STORAGE_PERMISSION_REQ);
     }
 
@@ -134,9 +134,9 @@ public class SelectActivity extends AppCompatActivity {
             if (ActivityCompat.shouldShowRequestPermissionRationale(SelectActivity.this,
                     Manifest.permission.CAMERA)) {
                 showExplanation();
-            } else if (!MySharedPreference.getInstance(SelectActivity.this).getCameraPermission()) {
+            } else if (!InstaPickerSharedPreference.getInstance(SelectActivity.this).getCameraPermission()) {
                 requestPermission();
-                MySharedPreference.getInstance(SelectActivity.this).setCameraPermission();
+                InstaPickerSharedPreference.getInstance(SelectActivity.this).setCameraPermission();
             } else {
                 showToast(getString(R.string.camera_permission_deny));
                 Intent intent = new Intent();
@@ -155,11 +155,11 @@ public class SelectActivity extends AppCompatActivity {
         if (checkStoragePermission() != PackageManager.PERMISSION_GRANTED) {
 
             if (ActivityCompat.shouldShowRequestPermissionRationale(SelectActivity.this,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                    Manifest.permission.READ_EXTERNAL_STORAGE)) {
                 showStorageExplanation();
-            } else if (!MySharedPreference.getInstance(SelectActivity.this).getStoragePermission()) {
+            } else if (!InstaPickerSharedPreference.getInstance(SelectActivity.this).getStoragePermission()) {
                 requestStoragePermission();
-                MySharedPreference.getInstance(SelectActivity.this).setStoragePermission();
+                InstaPickerSharedPreference.getInstance(SelectActivity.this).setStoragePermission();
             } else {
                 showToast(getString(R.string.storage_permission_deny));
                 Intent intent = new Intent();

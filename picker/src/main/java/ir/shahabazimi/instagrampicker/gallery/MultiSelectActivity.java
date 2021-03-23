@@ -12,21 +12,17 @@ import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-
-import com.theartofdev.edmodo.cropper.CropImage;
 import com.tmall.ultraviewpager.UltraViewPager;
 import com.tmall.ultraviewpager.transformer.UltraScaleTransformer;
-
+import com.yalantis.ucrop.UCrop;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-
 import ir.shahabazimi.instagrampicker.InstagramPicker;
 import ir.shahabazimi.instagrampicker.R;
 import ir.shahabazimi.instagrampicker.classes.BackgroundActivity;
@@ -62,8 +58,11 @@ public class MultiSelectActivity extends AppCompatActivity {
         ultraViewPager.setScrollMode(UltraViewPager.ScrollMode.HORIZONTAL);
         MultiSelectImageAdapter adapter = new MultiSelectImageAdapter(this, addressesList, (a, p) -> {
             position = p;
-            CropImage.activity(Uri.parse(a))
-                    .setAspectRatio(4, 3)
+            UCrop.Options options = new UCrop.Options();
+            options.setToolbarTitle(getString(R.string.instagrampicker_crop_title));
+            UCrop.of(Uri.parse(a),Uri.fromFile(new File(getCacheDir(), Statics.getCurrentDate())))
+                    .withAspectRatio(4,3)
+                    .withOptions(options)
                     .start(this);
 
         });
@@ -79,13 +78,12 @@ public class MultiSelectActivity extends AppCompatActivity {
         ultraViewPager.getIndicator().setMargin(0, 0, 0, 30);
         ultraViewPager.setMultiScreen(0.6f);
         ultraViewPager.setItemRatio(1.0f);
-        //  ultraViewPager.setAutoMeasureHeight(true);
         ultraViewPager.getIndicator().build();
 
     }
 
 
-    private BroadcastReceiver br = new BroadcastReceiver() {
+    private final BroadcastReceiver br = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent data) {
             try {
@@ -143,18 +141,12 @@ public class MultiSelectActivity extends AppCompatActivity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
-            CropImage.ActivityResult result = CropImage.getActivityResult(data);
-            if (resultCode == RESULT_OK) {
-                Uri resultUri = result.getUri();
-                Intent in = new Intent(this, FilterActivity.class);
-                FilterActivity.picAddress = resultUri;
-                FilterActivity.position = position;
-                startActivityForResult(in, 123);
-
-            }
+        if (resultCode == RESULT_OK && requestCode == UCrop.REQUEST_CROP && data!=null) {
+            Uri resultUri = UCrop.getOutput(data);
+            Intent in = new Intent(this, FilterActivity.class);
+            FilterActivity.picAddress = resultUri;
+            FilterActivity.position = position;
+            startActivityForResult(in, 123);
         }
-
     }
 }

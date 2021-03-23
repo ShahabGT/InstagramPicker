@@ -16,11 +16,11 @@ import static ir.shahabazimi.instagrampicker.classes.Statics.INTENT_FILTER_ACTIO
 
 public class InstagramPicker {
 
-    private Activity activity;
+    private final Activity activity;
     private MultiListener mListener;
     private SingleListener sListener;
-    public static int x;
-    public static int y;
+    public static float x;
+    public static float y;
     public static boolean multiSelect;
     public static int numberOfPictures;
 
@@ -31,7 +31,7 @@ public class InstagramPicker {
     }
 
 
-    public void show(int CropXRatio, int CropYRatio, SingleListener listener) {
+    public void show(int CropXRatio, int CropYRatio, @NonNull SingleListener listener) {
         addresses = new ArrayList<>();
         InstagramPicker.x = CropXRatio;
         InstagramPicker.y = CropYRatio;
@@ -42,7 +42,7 @@ public class InstagramPicker {
         activity.registerReceiver(br, new IntentFilter(INTENT_FILTER_ACTION_NAME));
     }
 
-    public void show(int CropXRatio, int CropYRatio, int numberOfPictures, MultiListener listener) {
+    public void show(int CropXRatio, int CropYRatio, int numberOfPictures, @NonNull MultiListener listener) {
         addresses = new ArrayList<>();
         if (numberOfPictures < 2)
             numberOfPictures = 2;
@@ -61,7 +61,7 @@ public class InstagramPicker {
 
     }
 
-    private BroadcastReceiver br = new BroadcastReceiver() {
+    private final BroadcastReceiver br = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             if (multiSelect)

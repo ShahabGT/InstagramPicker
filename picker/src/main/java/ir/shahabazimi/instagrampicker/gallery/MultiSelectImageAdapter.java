@@ -15,9 +15,9 @@ import java.util.List;
 
 public class MultiSelectImageAdapter extends PagerAdapter {
 
-    private Context context;
-    private List<String> addresses;
-    private SelectListener sl;
+    private final Context context;
+    private final List<String> addresses;
+    private final SelectListener sl;
 
 
     MultiSelectImageAdapter(Context context, List<String> addresses, SelectListener sl) {

@@ -1,7 +1,5 @@
 package ir.shahabazimi.instagrampicker.gallery;
 
-
-
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,16 +17,13 @@ import java.util.List;
 import ir.shahabazimi.instagrampicker.InstagramPicker;
 import ir.shahabazimi.instagrampicker.R;
 
-
 public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHolder> {
 
-    private List<GalleryModel> list;
-    private GalleySelectedListener galleySelectedListener;
+    private final List<GalleryModel> list;
+    private final GalleySelectedListener galleySelectedListener;
     private int count=0;
-
-    private List<String> selectedPics;
-
-    private boolean multiSelect;
+    private final List<String> selectedPics;
+    private final boolean multiSelect;
 
     GalleryAdapter( List<GalleryModel> list,GalleySelectedListener galleySelectedListener, boolean multiSelect){
         this.list=list;
@@ -103,12 +98,11 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
 
     static class ViewHolder extends RecyclerView.ViewHolder{
 
-        private ImageView pic;
-        private RadioButton bgSelect;
+        private final ImageView pic;
+        private final RadioButton bgSelect;
 
         ViewHolder(@NonNull View v){
             super(v);
-
             pic = v.findViewById(R.id.row_gallery_pic);
             bgSelect = v.findViewById(R.id.row_gallery_select);
         }
