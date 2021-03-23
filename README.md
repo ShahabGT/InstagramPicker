@@ -4,10 +4,11 @@ InstagramPicker is an android library that lets you choose single/multi pictures
 it manages permissions too. Camera and Write External Storage is used but you don't need to add this in your manifest file.
 
 <p align="center">
-  <img src="1.jpg" width="300" />
-  <img src="2.jpg" width="300" /><br>
-  <img src="3.jpg" width="300" />
-  <img src="4.jpg" width="300" />
+  <img src="s1.jpg" width="300" />
+  <img src="s2.jpg" width="300" /><br>
+  <img src="s3.jpg" width="300" />
+  <img src="s4.jpg" width="300" />
+  <img src="s5.jpg" width="300" />
 </p>
 
 # Table of Contents
