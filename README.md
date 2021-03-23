@@ -35,7 +35,7 @@ Step 2. Add the dependency<br>
 Add it in your dependencies section of build.gradle (app level):
 ```
 	dependencies {
-	        implementation 'com.github.ShahabGT:InstagramPicker:2.1.1'
+	        implementation 'com.github.ShahabGT:InstagramPicker:2.2.0'
 	}
 ```
 Step 3. It uses Java 8 so add these lines in build.gardle(app level) in the android tag:
@@ -51,9 +51,10 @@ Step 4. Add these activities in your manifest file. in the application tag:
 <activity android:name="ir.shahabazimi.instagrampicker.gallery.SelectActivity" />
 <activity android:name="ir.shahabazimi.instagrampicker.filter.FilterActivity" />
 <activity android:name="ir.shahabazimi.instagrampicker.gallery.MultiSelectActivity"/>
-<activity
-	android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
-	android:theme="@style/Base.Theme.AppCompat" />
+  <activity
+            android:name="com.yalantis.ucrop.UCropActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
 ```
 
 
