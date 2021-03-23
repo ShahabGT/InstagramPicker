@@ -114,7 +114,7 @@ you can customize the texts in the library using the cheatsheet below:
 [Ultra ViewPager](https://github.com/alibaba/UltraViewPager) UltraViewPager is an extension for ViewPager to provide multiple features in a single ViewPager.<br>
 [Android-Image-Cropper](https://github.com/ArthurHub/Android-Image-Cropper) Image Cropping Library for Android, optimized for Camera / Gallery.<br>
 [Picasso](https://github.com/square/picasso) A powerful image downloading and caching library for Android.<br>
-[AndroidPhotoFilters](https://github.com/ravi8x/AndroidPhotoFilters)AndroidPhotoFilters aims to provide fast, powerful and flexible image processing instrument for creating awesome effects on any image media.
+[uCrop](https://github.com/Yalantis/uCrop)AndroidPhotoFilters aims to provide fast, powerful and flexible image processing instrument for creating awesome effects on any image media.
 
 # Developed By
 
