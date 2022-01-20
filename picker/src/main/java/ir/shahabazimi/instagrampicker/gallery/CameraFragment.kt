@@ -46,6 +46,7 @@ class CameraFragment : Fragment() {
     companion object {
         private const val FILENAME_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSS"
     }
+
     private lateinit var cameraPermission: ActivityResultLauncher<String>
     private lateinit var b: FragmentCameraBinding
     private var isFront = false
@@ -132,7 +133,7 @@ class CameraFragment : Fragment() {
     }
 
 
-    private fun initCamera(){
+    private fun initCamera() {
         startCamera(CameraSelector.DEFAULT_BACK_CAMERA)
         b.cCapture.setOnClickListener { takePhoto() }
 
@@ -290,10 +291,10 @@ class CameraFragment : Fragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (resultCode == RESULT_OK && requestCode == UCrop.REQUEST_CROP && data != null) {
             val resultUri = UCrop.getOutput(data)
-            val `in` = Intent(requireContext(), FilterActivity::class.java)
-            `in`.putExtra("uri", resultUri)
             FilterActivity.picAddress = resultUri
-            startActivityForResult(`in`, 444)
+            startActivity(Intent(requireContext(), FilterActivity::class.java).apply {
+                putExtra("uri", resultUri)
+            })
         }
     }
 
