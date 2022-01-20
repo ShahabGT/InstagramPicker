@@ -1,21 +1,31 @@
 package ir.shahabazimi.instagrampicker.gallery
 
+import android.Manifest.permission.CAMERA
 import android.annotation.SuppressLint
 import android.app.Activity.RESULT_OK
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
+import android.provider.Settings
 import android.view.*
+import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.*
 import androidx.camera.core.ImageCapture.*
 import androidx.camera.lifecycle.ProcessCameraProvider
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.NavHostFragment
 import com.yalantis.ucrop.UCrop
 import ir.shahabazimi.instagrampicker.InstagramPicker
 import ir.shahabazimi.instagrampicker.R
+import ir.shahabazimi.instagrampicker.classes.InstaPickerSharedPreference
 import ir.shahabazimi.instagrampicker.classes.Statics
 import ir.shahabazimi.instagrampicker.databinding.FragmentCameraBinding
 import ir.shahabazimi.instagrampicker.filter.FilterActivity
@@ -36,16 +46,24 @@ class CameraFragment : Fragment() {
     companion object {
         private const val FILENAME_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSS"
     }
-
+    private lateinit var cameraPermission: ActivityResultLauncher<String>
     private lateinit var b: FragmentCameraBinding
     private var isFront = false
     private var imageCapture: ImageCapture? = null
     private var flash = FlashMode.FLASH_OFF
     private lateinit var outputDirectory: File
     private lateinit var cameraExecutor: ExecutorService
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(false)
+        cameraExecutor = Executors.newSingleThreadExecutor()
+        cameraPermission = registerForActivityResult(ActivityResultContracts.RequestPermission()) {
+            if (it)
+                initCamera()
+            else
+                NavHostFragment.findNavController(this).popBackStack()
+        }
     }
 
     override fun onCreateView(
@@ -62,7 +80,59 @@ class CameraFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         val actionBar = (activity as AppCompatActivity).supportActionBar
         actionBar?.title = getString(R.string.instagrampicker_camera_title)
+        setupPermissions()
+    }
 
+    private fun setupPermissions() {
+        val permission = ContextCompat.checkSelfPermission(
+            requireContext(),
+            CAMERA
+        )
+
+        if (permission != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(
+                    requireActivity(),
+                    CAMERA
+                )
+            ) {
+                val builder = AlertDialog.Builder(requireContext())
+                builder.setMessage(getString(R.string.camera_permission_message))
+                    .setTitle(getString(R.string.camera_permission_title))
+
+                builder.setPositiveButton(
+                    getString(R.string.camera_permission_positive)
+                ) { _, _ ->
+                    cameraPermission.launch(CAMERA)
+                }
+                builder.setNegativeButton(getString(R.string.camera_permission_negative)) { a, _ ->
+                    a.dismiss()
+                }
+
+                val dialog = builder.create()
+                dialog.show()
+            } else if (!InstaPickerSharedPreference(requireContext()).getCameraPermission()) {
+                cameraPermission.launch(CAMERA)
+                InstaPickerSharedPreference(requireContext()).setCameraPermission()
+            } else {
+                Toast.makeText(
+                    requireContext(),
+                    getString(R.string.camera_permission_deny),
+                    Toast.LENGTH_SHORT
+                ).show()
+
+                startActivity(Intent().also {
+                    it.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
+                    it.data = Uri.fromParts("package", requireActivity().packageName, null)
+                }
+                )
+            }
+        } else {
+            initCamera()
+        }
+    }
+
+
+    private fun initCamera(){
         startCamera(CameraSelector.DEFAULT_BACK_CAMERA)
         b.cCapture.setOnClickListener { takePhoto() }
 
