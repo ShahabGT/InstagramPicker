@@ -29,7 +29,7 @@ public class SelectActivity extends AppCompatActivity {
         setContentView(R.layout.activity_select);
         Toolbar toolbar = findViewById(R.id.select_toolbar);
         setSupportActionBar(toolbar);
-        BackgroundActivity.getInstance().setActivity(this);
+        BackgroundActivity.Companion.setActivity(this);
         BottomNavigationView bnv = findViewById(R.id.select_bnv);
 
         bnv.setOnNavigationItemSelectedListener(mi -> {
@@ -134,9 +134,9 @@ public class SelectActivity extends AppCompatActivity {
             if (ActivityCompat.shouldShowRequestPermissionRationale(SelectActivity.this,
                     Manifest.permission.CAMERA)) {
                 showExplanation();
-            } else if (!InstaPickerSharedPreference.getInstance(SelectActivity.this).getCameraPermission()) {
+            } else if (!InstaPickerSharedPreference.invoke(SelectActivity.this).getCameraPermission()) {
                 requestPermission();
-                InstaPickerSharedPreference.getInstance(SelectActivity.this).setCameraPermission();
+                InstaPickerSharedPreference.invoke(SelectActivity.this).setCameraPermission();
             } else {
                 showToast(getString(R.string.camera_permission_deny));
                 Intent intent = new Intent();
@@ -157,9 +157,9 @@ public class SelectActivity extends AppCompatActivity {
             if (ActivityCompat.shouldShowRequestPermissionRationale(SelectActivity.this,
                     Manifest.permission.READ_EXTERNAL_STORAGE)) {
                 showStorageExplanation();
-            } else if (!InstaPickerSharedPreference.getInstance(SelectActivity.this).getStoragePermission()) {
+            } else if (!InstaPickerSharedPreference.invoke(SelectActivity.this).getStoragePermission()) {
                 requestStoragePermission();
-                InstaPickerSharedPreference.getInstance(SelectActivity.this).setStoragePermission();
+                InstaPickerSharedPreference.invoke(SelectActivity.this).setStoragePermission();
             } else {
                 showToast(getString(R.string.storage_permission_deny));
                 Intent intent = new Intent();

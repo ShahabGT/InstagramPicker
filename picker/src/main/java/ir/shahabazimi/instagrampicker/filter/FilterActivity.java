@@ -170,7 +170,7 @@ public class FilterActivity extends AppCompatActivity implements FiltersListFrag
                         InstagramPicker.addresses.add(Uri.fromFile(f).toString());
                         sendBroadcast(new Intent(INTENT_FILTER_ACTION_NAME));
                         FilterActivity.this.finish();
-                        Objects.requireNonNull(BackgroundActivity.getInstance().getActivity()).finish();
+                        Objects.requireNonNull(BackgroundActivity.Companion.getActivity()).finish();
 
                     } catch (Exception ignored) { }
 

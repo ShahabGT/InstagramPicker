@@ -129,7 +129,7 @@ public class MultiSelectActivity extends AppCompatActivity {
             InstagramPicker.addresses= finalAddresses;
             sendBroadcast(new Intent(INTENT_FILTER_ACTION_NAME));
             MultiSelectActivity.this.finish();
-            Objects.requireNonNull(BackgroundActivity.getInstance().getActivity()).finish();
+            Objects.requireNonNull(BackgroundActivity.Companion.getActivity()).finish();
 
             return true;
         }
