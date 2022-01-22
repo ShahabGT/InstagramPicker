@@ -5,21 +5,21 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.squareup.picasso.Picasso
-import ir.shahabazimi.instagrampicker.InstagramPicker
+import com.bumptech.glide.Glide
+import ir.shahabazimi.instagrampicker.classes.Const
 import ir.shahabazimi.instagrampicker.databinding.RowGalleryPicsBinding
 
 class GalleryAdapter(
     private val list: List<GalleryModel>,
-    private val galleySelectedListener: GalleySelectedListener,
-    private val multiSelect: Boolean
+    private val multiSelect: Boolean,
+    private val select:(List<String>) -> Unit
 ) : RecyclerView.Adapter<GalleryAdapter.ViewHolder>() {
     var count = 0
     val selectedPics = mutableListOf<String>()
 
     init {
         if (multiSelect) {
-            count = InstagramPicker.numberOfPictures
+            count = Const.numberOfPictures
         }
         if (!multiSelect) {
             list.map { it.isSelected = false }
@@ -30,8 +30,9 @@ class GalleryAdapter(
 
 
         fun bind(model: GalleryModel) {
-            Picasso.get().load(Uri.parse(model.address))
-                .resize(150, 150)
+            Glide.with(v.rowGalleryPic)
+                .load(Uri.parse(model.address))
+                .override(150,150)
                 .centerCrop()
                 .into(v.rowGalleryPic)
 
@@ -61,10 +62,10 @@ class GalleryAdapter(
                         } else {
                             selectedPics.remove(model.address)
                         }
-                        galleySelectedListener.onMultiSelect(selectedPics)
+                        select(selectedPics)
                     }
                 } else
-                    galleySelectedListener.onSingleSelect(model.address)
+                    select(listOf(model.address))
 
 
             }

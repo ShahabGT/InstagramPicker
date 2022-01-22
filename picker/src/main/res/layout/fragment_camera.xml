@@ -18,11 +18,13 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         android:id="@+id/c_focus"
         android:layout_width="70dp"
         android:layout_height="70dp"
@@ -36,7 +38,7 @@
         android:layout_margin="14dp"
         android:alpha="0.7"
         android:src="@mipmap/ic_front"
-        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
@@ -46,7 +48,7 @@
         android:layout_margin="14dp"
         android:alpha="0.7"
         android:src="@mipmap/ic_flash_off"
-        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
 
@@ -54,13 +56,10 @@
         android:id="@+id/c_capture"
         android:layout_width="80dp"
         android:layout_height="80dp"
-        android:clickable="true"
-        android:focusable="true"
-        android:soundEffectsEnabled="true"
         android:src="@drawable/shutter_drawable"
         app:layout_constraintBottom_toBottomOf="@+id/c_guide"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/c_guide" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

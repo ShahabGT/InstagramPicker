@@ -3,11 +3,16 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_nav"
-    app:startDestination="@id/selectActivity">
+    app:startDestination="@id/bnv_gallery">
 
-    <activity
-        android:id="@+id/selectActivity"
-        android:name="ir.shahabazimi.instagrampicker.gallery.SelectActivity"
-        android:label="activity_select"
-        tools:layout="@layout/activity_select" />
+    <fragment
+        android:id="@+id/bnv_camera"
+        android:name="ir.shahabazimi.instagrampicker.gallery.CameraFragment"
+        android:label="CameraFragment"
+        tools:layout="@layout/fragment_camera" />
+    <fragment
+        android:id="@+id/bnv_gallery"
+        android:name="ir.shahabazimi.instagrampicker.gallery.GalleryFragment"
+        android:label="fragment_gallery"
+        tools:layout="@layout/fragment_gallery" />
 </navigation>

@@ -26,6 +26,7 @@ import java.util.Objects;
 import ir.shahabazimi.instagrampicker.InstagramPicker;
 import ir.shahabazimi.instagrampicker.R;
 import ir.shahabazimi.instagrampicker.classes.BackgroundActivity;
+import ir.shahabazimi.instagrampicker.classes.Const;
 import ir.shahabazimi.instagrampicker.classes.Statics;
 import ir.shahabazimi.instagrampicker.filter.FilterActivity;
 
@@ -123,10 +124,8 @@ public class MultiSelectActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         if (id == R.id.action_open) {
-            if(InstagramPicker.addresses==null){
-                InstagramPicker.addresses = new ArrayList<>();
-            }
-            InstagramPicker.addresses= finalAddresses;
+
+            Const.addresses= finalAddresses;
             sendBroadcast(new Intent(INTENT_FILTER_ACTION_NAME));
             MultiSelectActivity.this.finish();
             Objects.requireNonNull(BackgroundActivity.Companion.getActivity()).finish();

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     style="@style/Theme.MaterialComponents.Light.NoActionBar"
@@ -8,44 +7,42 @@
     android:layout_height="match_parent"
     android:animateLayoutChanges="true"
     android:background="@android:color/background_light"
-    android:clickable="true"
-    android:focusable="true"
     tools:context=".gallery.GalleryFragment">
 
 
     <View
-        app:layout_constraintTop_toBottomOf="@id/guideline"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        android:background="@android:color/darker_gray"
         android:layout_width="match_parent"
-        android:layout_height="0.5dp"/>
+        android:layout_height="0.5dp"
+        android:background="@android:color/darker_gray"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/guideline" />
+
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.5" />
+        app:layout_constraintGuide_percent="0.4" />
 
-        <ir.shahabazimi.instagrampicker.classes.TouchImageView
-            android:id="@+id/gallery_view"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:scaleType="centerCrop"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/guideline" />
+    <ImageView
+        android:id="@+id/gallery_view"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@id/guideline"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <ImageView
-            android:id="@+id/gallery_multiselect"
-            android:layout_width="35dp"
-            android:layout_height="35dp"
-            android:layout_margin="6dp"
-            android:alpha="0.8"
-            android:src="@mipmap/ic_multi_disable"
-            app:layout_constraintBottom_toBottomOf="@id/gallery_view"
-            app:layout_constraintRight_toRightOf="parent" />
+    <ImageView
+        android:id="@+id/gallery_multiselect"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_margin="6dp"
+        android:alpha="0.8"
+        android:src="@mipmap/ic_multi_disable"
+        app:layout_constraintBottom_toBottomOf="@id/gallery_view"
+        app:layout_constraintRight_toRightOf="parent" />
 
 
     <androidx.recyclerview.widget.RecyclerView

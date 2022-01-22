@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/Theme.Material3.DayNight.NoActionBar"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".gallery.SelectActivity">
+    android:layout_height="match_parent">
 
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/select_toolbar"
@@ -13,25 +12,30 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:menu="@menu/menu_main" />
+        app:menu="@menu/menu_main"
+        app:popupTheme="@style/AppTheme.PopupOverlay" />
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/select_container"
         android:name="androidx.navigation.fragment.NavHostFragment"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        app:defaultNavHost="true"
         app:layout_constraintBottom_toTopOf="@id/select_bnv"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/select_toolbar"
-        app:navGraph="@navigation/main_nav" />
+        app:navGraph="@navigation/main_nav"
+        app:popupTheme="@style/AppTheme.PopupOverlay" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/select_bnv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@android:color/background_light"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:menu="@menu/bottomnavigation" />
+        app:menu="@menu/bnv"
+        app:popupTheme="@style/AppTheme.PopupOverlay" />
 </androidx.constraintlayout.widget.ConstraintLayout>

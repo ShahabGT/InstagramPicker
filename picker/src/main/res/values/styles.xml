@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.Material3.DynamicColors.DayNight" />
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.Material3.DynamicColors.DayNight" />
+
+    <style name="BottomNavigation">
+        <item name="android:background">@android:color/background_light</item>
+
+    </style>
+
+</resources>

@@ -9,7 +9,8 @@ import android.widget.ImageView;
 import androidx.annotation.NonNull;
 import androidx.viewpager.widget.PagerAdapter;
 
-import com.squareup.picasso.Picasso;
+
+import com.bumptech.glide.Glide;
 
 import java.util.List;
 
@@ -47,9 +48,11 @@ public class MultiSelectImageAdapter extends PagerAdapter {
 
                        imageView.setOnClickListener(w -> sl.onClick(model, position));
 
-            Picasso.get().load(Uri.parse(model))
-                    .into(imageView);
+        Glide.with(imageView)
+                .load(Uri.parse(model))
+                .into(imageView);
             container.addView(imageView);
+
 
 
             return imageView;

@@ -33,6 +33,7 @@ import java.util.Objects;
 import ir.shahabazimi.instagrampicker.InstagramPicker;
 import ir.shahabazimi.instagrampicker.R;
 import ir.shahabazimi.instagrampicker.classes.BackgroundActivity;
+import ir.shahabazimi.instagrampicker.classes.Const;
 import ir.shahabazimi.instagrampicker.classes.Statics;
 
 import static ir.shahabazimi.instagrampicker.classes.Statics.INTENT_FILTER_ACTION_NAME;
@@ -164,10 +165,8 @@ public class FilterActivity extends AppCompatActivity implements FiltersListFrag
                         fileOutputStream.write(pic);
                         fileOutputStream.close();
                         fileOutputStream.flush();
-                        if(InstagramPicker.addresses==null){
-                            InstagramPicker.addresses = new ArrayList<>();
-                        }
-                        InstagramPicker.addresses.add(Uri.fromFile(f).toString());
+
+                        Const.addresses.add(Uri.fromFile(f).toString());
                         sendBroadcast(new Intent(INTENT_FILTER_ACTION_NAME));
                         FilterActivity.this.finish();
                         Objects.requireNonNull(BackgroundActivity.Companion.getActivity()).finish();

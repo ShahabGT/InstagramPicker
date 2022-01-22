@@ -25,6 +25,7 @@ import androidx.navigation.fragment.NavHostFragment
 import com.yalantis.ucrop.UCrop
 import ir.shahabazimi.instagrampicker.InstagramPicker
 import ir.shahabazimi.instagrampicker.R
+import ir.shahabazimi.instagrampicker.classes.Const
 import ir.shahabazimi.instagrampicker.classes.InstaPickerSharedPreference
 import ir.shahabazimi.instagrampicker.classes.Statics
 import ir.shahabazimi.instagrampicker.databinding.FragmentCameraBinding
@@ -62,8 +63,6 @@ class CameraFragment : Fragment() {
         cameraPermission = registerForActivityResult(ActivityResultContracts.RequestPermission()) {
             if (it)
                 initCamera()
-            else
-                NavHostFragment.findNavController(this).popBackStack()
         }
     }
 
@@ -272,8 +271,7 @@ class CameraFragment : Fragment() {
     }
 
     private fun startCropping(f: File) {
-        val x = InstagramPicker.x
-        val y = InstagramPicker.y
+
         val options = UCrop.Options()
         options.setToolbarTitle(getString(R.string.instagrampicker_crop_title))
         options.setCompressionFormat(Bitmap.CompressFormat.JPEG)
@@ -282,7 +280,7 @@ class CameraFragment : Fragment() {
             Uri.fromFile(f),
             Uri.fromFile(File(requireActivity().cacheDir, Statics.getCurrentDate()))
         )
-            .withAspectRatio(x, y)
+            .withAspectRatio(Const.cropXRatio, Const.cropYRatio)
             .withOptions(options)
             .start(requireContext(), this)
 
