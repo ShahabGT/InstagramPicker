@@ -14,5 +14,9 @@
         android:id="@+id/bnv_gallery"
         android:name="ir.shahabazimi.instagrampicker.gallery.GalleryFragment"
         android:label="fragment_gallery"
-        tools:layout="@layout/fragment_gallery" />
+        tools:layout="@layout/fragment_gallery" >
+        <action
+            android:id="@+id/action_bnv_gallery_to_bnv_camera"
+            app:destination="@id/bnv_camera" />
+    </fragment>
 </navigation>

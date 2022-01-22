@@ -22,6 +22,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.NavHostFragment
+import com.google.android.material.appbar.MaterialToolbar
 import com.yalantis.ucrop.UCrop
 import ir.shahabazimi.instagrampicker.InstagramPicker
 import ir.shahabazimi.instagrampicker.R
@@ -63,6 +64,8 @@ class CameraFragment : Fragment() {
         cameraPermission = registerForActivityResult(ActivityResultContracts.RequestPermission()) {
             if (it)
                 initCamera()
+            else
+                NavHostFragment.findNavController(this).popBackStack()
         }
     }
 
@@ -78,8 +81,7 @@ class CameraFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val actionBar = (activity as AppCompatActivity).supportActionBar
-        actionBar?.title = getString(R.string.instagrampicker_camera_title)
+        requireActivity().findViewById<MaterialToolbar>(R.id.select_toolbar).visibility = View.GONE
         setupPermissions()
     }
 
@@ -120,11 +122,12 @@ class CameraFragment : Fragment() {
                     Toast.LENGTH_SHORT
                 ).show()
 
-                startActivity(Intent().also {
-                    it.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
-                    it.data = Uri.fromParts("package", requireActivity().packageName, null)
+                startActivity(Intent().apply {
+                    action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
+                    data = Uri.fromParts("package", requireActivity().packageName, null)
                 }
                 )
+                NavHostFragment.findNavController(this).popBackStack()
             }
         } else {
             initCamera()
@@ -136,7 +139,10 @@ class CameraFragment : Fragment() {
         startCamera(CameraSelector.DEFAULT_BACK_CAMERA)
         b.cCapture.setOnClickListener { takePhoto() }
 
+        b.cClose.setOnClickListener { NavHostFragment.findNavController(this).popBackStack() }
+
         b.cChange.setOnClickListener {
+            b.cFocus.visibility = View.INVISIBLE
             isFront = if (isFront) {
                 startCamera(CameraSelector.DEFAULT_BACK_CAMERA)
                 false
@@ -150,15 +156,15 @@ class CameraFragment : Fragment() {
             when (flash) {
                 FlashMode.FLASH_OFF -> {
                     flash = FlashMode.FLASH_AUTO
-                    b.cFlash.setImageResource(R.mipmap.ic_flash_auto)
+                    b.cFlash.setImageResource(R.drawable.vector_flash_auto)
                 }
                 FlashMode.FLASH_AUTO -> {
                     flash = FlashMode.FLASH_ON
-                    b.cFlash.setImageResource(R.mipmap.ic_flash_on)
+                    b.cFlash.setImageResource(R.drawable.vector_flash_on)
                 }
                 FlashMode.FLASH_ON -> {
                     flash = FlashMode.FLASH_OFF
-                    b.cFlash.setImageResource(R.mipmap.ic_flash_off)
+                    b.cFlash.setImageResource(R.drawable.vector_flash_off)
                 }
             }
 

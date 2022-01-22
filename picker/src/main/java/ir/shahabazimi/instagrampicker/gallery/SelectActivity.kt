@@ -18,9 +18,6 @@ class SelectActivity : AppCompatActivity() {
     }
 
     private fun init() {
-        val navHostFragment =
-            supportFragmentManager.findFragmentById(R.id.select_container) as NavHostFragment
-        NavigationUI.setupWithNavController(b.selectBnv, navHostFragment.navController)
         setSupportActionBar(b.selectToolbar)
         BackgroundActivity.setActivity(this)
     }

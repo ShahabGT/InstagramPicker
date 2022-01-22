@@ -18,6 +18,7 @@ import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.exifinterface.media.ExifInterface
@@ -27,6 +28,7 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.google.android.material.appbar.MaterialToolbar
 import com.yalantis.ucrop.UCrop
 import ir.shahabazimi.instagrampicker.InstagramPicker
 import ir.shahabazimi.instagrampicker.R
@@ -81,10 +83,16 @@ class GalleryFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        requireActivity().actionBar?.title = getString(R.string.instagrampicker_gallery_title)
+        val actionBar = (activity as AppCompatActivity).supportActionBar
+        actionBar?.title = getString(R.string.instagrampicker_gallery_title)
         setHasOptionsMenu(true)
         setupPermissions()
+
+    }
+
+    override fun onResume() {
+        super.onResume()
+        requireActivity().findViewById<MaterialToolbar>(R.id.select_toolbar).visibility=View.VISIBLE
 
     }
 
@@ -142,12 +150,15 @@ class GalleryFragment : Fragment() {
         if (!Const.multiSelect) {
             b.galleryMultiselect.visibility = View.GONE
         }
-        b.galleryMultiselect.setOnClickListener {
+        b.galleryCamera.setOnClickListener {
+            NavHostFragment.findNavController(this).navigate(R.id.action_bnv_gallery_to_bnv_camera)
+        }
+        b.galleryMultiselectLayout.setOnClickListener {
             selectedPics.clear()
             val positionView =
                 (b.galleryRecycler.layoutManager as GridLayoutManager).findFirstVisibleItemPosition()
             multiSelect = !multiSelect
-            b.galleryMultiselect.setImageResource(if (multiSelect) R.mipmap.ic_multi_enable else R.mipmap.ic_multi_disable)
+            b.galleryMultiselectLayout.setBackgroundResource(if (multiSelect) R.drawable.img_bg_selected else R.drawable.img_bg)
 
             adapter = GalleryAdapter(
                 data, multiSelect

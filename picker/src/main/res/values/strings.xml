@@ -10,6 +10,8 @@
     <string name="tab_filters">FILTERS</string>
     <string name="tab_edit">EDIT</string>
     <string name="Next">Next</string>
+    <string name="select_multiple">SELECT MULTIPLE</string>
+    <string name="select_gallery">GALLERY</string>
 
     <string name="camera_permission_title">Camera Permission</string>
     <string name="camera_permission_message">This permission is needed to Take Photos</string>

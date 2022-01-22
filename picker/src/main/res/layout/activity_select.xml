@@ -21,21 +21,11 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:defaultNavHost="true"
-        app:layout_constraintBottom_toTopOf="@id/select_bnv"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/select_toolbar"
         app:navGraph="@navigation/main_nav"
         app:popupTheme="@style/AppTheme.PopupOverlay" />
 
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/select_bnv"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@android:color/background_light"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:menu="@menu/bnv"
-        app:popupTheme="@style/AppTheme.PopupOverlay" />
 </androidx.constraintlayout.widget.ConstraintLayout>

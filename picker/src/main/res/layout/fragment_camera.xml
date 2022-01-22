@@ -1,65 +1,88 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    style="@style/Theme.MaterialComponents.Light.NoActionBar"
+    style="@style/Theme.Material3.DayNight.NoActionBar"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/c_guide"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.9" />
-
 
     <androidx.camera.view.PreviewView
         android:id="@+id/c_viewFinder"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginBottom="-16dp"
+        android:alpha="0.5"
+        android:background="#000000"
+        android:paddingBottom="100dp"
+        app:layout_constraintBottom_toBottomOf="@id/c_close"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
         android:id="@+id/c_focus"
         android:layout_width="70dp"
         android:layout_height="70dp"
         android:src="@drawable/focus_drawable"
-        android:visibility="invisible" />
-
-    <ImageView
-        android:id="@+id/c_change"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_margin="14dp"
-        android:alpha="0.7"
-        android:src="@mipmap/ic_front"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:visibility="invisible"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/c_flash"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
         android:layout_margin="14dp"
-        android:alpha="0.7"
-        android:src="@mipmap/ic_flash_off"
+        android:clickable="true"
+        android:focusable="true"
+        android:src="@drawable/vector_flash_off"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="@android:color/white" />
 
+    <ImageView
+        android:id="@+id/c_change"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_margin="14dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:src="@drawable/vector_switch_camera"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="@android:color/white" />
+
+
+    <ImageView
+        android:id="@+id/c_close"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_margin="14dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:src="@drawable/vector_close"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="@android:color/white" />
 
     <ImageView
         android:id="@+id/c_capture"
         android:layout_width="80dp"
         android:layout_height="80dp"
+        android:layout_marginBottom="60dp"
+        android:clickable="true"
+        android:focusable="true"
         android:src="@drawable/shutter_drawable"
-        app:layout_constraintBottom_toBottomOf="@+id/c_guide"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/c_guide" />
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
