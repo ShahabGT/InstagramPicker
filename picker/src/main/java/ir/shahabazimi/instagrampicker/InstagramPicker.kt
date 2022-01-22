@@ -30,7 +30,7 @@ class InstagramPicker (private val activity: Activity) {
 
         @NonNull CropXRatio: Int,
         @NonNull CropYRatio: Int,
-        numberOfPictures: Int = 0,
+        numberOfPictures: Int = 1,
         @NonNull selectedImages:(List<String>)->Unit
     ) {
         val count = when {
@@ -41,8 +41,6 @@ class InstagramPicker (private val activity: Activity) {
         Const.addresses= mutableListOf()
         Const.cropXRatio = abs(CropXRatio).toFloat()
         Const.cropYRatio = abs(CropYRatio).toFloat()
-        if (count > 1)
-            Const.multiSelect = true
 
         Const.numberOfPictures = count
 
