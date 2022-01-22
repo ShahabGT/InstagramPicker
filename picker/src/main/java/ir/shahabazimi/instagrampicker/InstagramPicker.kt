@@ -1,13 +1,9 @@
 package ir.shahabazimi.instagrampicker
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import androidx.annotation.NonNull
 import ir.shahabazimi.instagrampicker.classes.Const
-import ir.shahabazimi.instagrampicker.classes.InstaPickerSharedPreference
-import ir.shahabazimi.instagrampicker.classes.MultiListener
-import ir.shahabazimi.instagrampicker.classes.Statics.INTENT_FILTER_ACTION_NAME
 import ir.shahabazimi.instagrampicker.gallery.SelectActivity
 import kotlin.math.abs
 
@@ -35,7 +31,7 @@ class InstagramPicker (private val activity: Activity) {
         @NonNull CropXRatio: Int,
         @NonNull CropYRatio: Int,
         numberOfPictures: Int = 0,
-        @NonNull listener: MultiListener
+        @NonNull selectedImages:(List<String>)->Unit
     ) {
         val count = when {
             numberOfPictures <= 0 -> 1

@@ -16,7 +16,8 @@ public class MainActivity extends AppCompatActivity {
 
         findViewById(R.id.main_button).setOnClickListener(w ->
                 new InstagramPicker(MainActivity.this).show(1, 1, 5, addresses -> {
-        }));
+                    return null;
+                }));
 
     }
 }
