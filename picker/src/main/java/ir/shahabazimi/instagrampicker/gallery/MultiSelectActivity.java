@@ -23,14 +23,12 @@ import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import ir.shahabazimi.instagrampicker.InstagramPicker;
 import ir.shahabazimi.instagrampicker.R;
 import ir.shahabazimi.instagrampicker.classes.BackgroundActivity;
 import ir.shahabazimi.instagrampicker.classes.Const;
 import ir.shahabazimi.instagrampicker.classes.Statics;
 import ir.shahabazimi.instagrampicker.filter.FilterActivity;
 
-import static ir.shahabazimi.instagrampicker.classes.Statics.INTENT_FILTER_ACTION_NAME;
 
 
 public class MultiSelectActivity extends AppCompatActivity {
@@ -61,7 +59,7 @@ public class MultiSelectActivity extends AppCompatActivity {
             position = p;
             UCrop.Options options = new UCrop.Options();
             options.setToolbarTitle(getString(R.string.instagrampicker_crop_title));
-            UCrop.of(Uri.parse(a),Uri.fromFile(new File(getCacheDir(), Statics.getCurrentDate())))
+            UCrop.of(Uri.parse(a),Uri.fromFile(new File(getCacheDir(), Const.INSTANCE.getCurrentDate())))
                     .withAspectRatio(4,3)
                     .withOptions(options)
                     .start(this);
@@ -123,10 +121,10 @@ public class MultiSelectActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.action_open) {
+        if (id == R.id.action_next) {
 
             Const.addresses= finalAddresses;
-            sendBroadcast(new Intent(INTENT_FILTER_ACTION_NAME));
+            sendBroadcast(new Intent(Const.INTENT_FILTER_ACTION_NAME));
             MultiSelectActivity.this.finish();
             Objects.requireNonNull(BackgroundActivity.Companion.getActivity()).finish();
 

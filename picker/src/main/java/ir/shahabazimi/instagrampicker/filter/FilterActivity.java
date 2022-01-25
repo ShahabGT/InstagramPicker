@@ -36,9 +36,6 @@ import ir.shahabazimi.instagrampicker.classes.BackgroundActivity;
 import ir.shahabazimi.instagrampicker.classes.Const;
 import ir.shahabazimi.instagrampicker.classes.Statics;
 
-import static ir.shahabazimi.instagrampicker.classes.Statics.INTENT_FILTER_ACTION_NAME;
-
-
 public class FilterActivity extends AppCompatActivity implements FiltersListFragment.FiltersListFragmentListener {
 
 
@@ -146,7 +143,7 @@ public class FilterActivity extends AppCompatActivity implements FiltersListFrag
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.action_open) {
+        if (id == R.id.action_next) {
             Statics.updatedPic = null;
             if (position != -1) {
                 Intent i = new Intent("ImageUpdated");
@@ -167,7 +164,7 @@ public class FilterActivity extends AppCompatActivity implements FiltersListFrag
                         fileOutputStream.flush();
 
                         Const.addresses.add(Uri.fromFile(f).toString());
-                        sendBroadcast(new Intent(INTENT_FILTER_ACTION_NAME));
+                        sendBroadcast(new Intent(Const.INTENT_FILTER_ACTION_NAME));
                         FilterActivity.this.finish();
                         Objects.requireNonNull(BackgroundActivity.Companion.getActivity()).finish();
 

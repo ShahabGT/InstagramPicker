@@ -34,12 +34,13 @@
     <string name="instagrampicker_crop_title">Crop</string>
 
 
-    <string name="instagrampicker_multi_select_title">Edit Images</string>
+    <string name="instagrampicker_multi_select_title">Click To Edit Images</string>
     <string name="instagrampicker_filter_title">Filters</string>
 
 
     <color name="filter_label_normal">#8A8889</color>
     <color name="filter_label_selected">#221F20</color>
+
 
 
 </resources>

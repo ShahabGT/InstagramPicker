@@ -73,7 +73,11 @@ class GalleryFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val actionBar = (activity as AppCompatActivity).supportActionBar
-        actionBar?.title = getString(R.string.instagrampicker_gallery_title)
+        actionBar?.let {
+            it.title = getString(R.string.instagrampicker_gallery_title)
+            it.setDisplayHomeAsUpEnabled(false)
+            it.setDisplayShowHomeEnabled(false)
+        }
         setHasOptionsMenu(true)
         setupPermissions()
 
@@ -198,7 +202,7 @@ class GalleryFragment : Fragment() {
         options.setCompressionFormat(Bitmap.CompressFormat.JPEG)
         options.withMaxResultSize(2000, 2000)
         options.setToolbarTitle(getString(R.string.instagrampicker_crop_title))
-        if (id == R.id.action_open) {
+        if (id == R.id.action_next) {
             when {
                 selectedPics.size == 1 -> {
                     UCrop.of(
@@ -206,7 +210,7 @@ class GalleryFragment : Fragment() {
                         Uri.fromFile(
                             File(
                                 requireActivity().cacheDir,
-                                Statics.getCurrentDate()
+                                Const.getCurrentDate()
                             )
                         )
                     )
@@ -215,9 +219,11 @@ class GalleryFragment : Fragment() {
                         .start(requireContext(), this)
                 }
                 selectedPics.size > 1 -> {
-                    MultiSelectActivity.addresses = selectedPics
-                    startActivity(Intent(requireActivity(), MultiSelectActivity::class.java))
-
+                    NavHostFragment.findNavController(this).navigate(R.id.action_bnv_gallery_to_multiSelectFragment,
+                    Bundle().apply
+                     {
+                         putStringArray("pics",selectedPics.toTypedArray())
+                     })
                 }
             }
 

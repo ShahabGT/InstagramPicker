@@ -284,7 +284,7 @@ class CameraFragment : Fragment() {
         options.withMaxResultSize(2000, 2000)
         UCrop.of(
             Uri.fromFile(f),
-            Uri.fromFile(File(requireActivity().cacheDir, Statics.getCurrentDate()))
+            Uri.fromFile(File(requireActivity().cacheDir, Const.getCurrentDate()))
         )
             .withAspectRatio(Const.cropXRatio, Const.cropYRatio)
             .withOptions(options)

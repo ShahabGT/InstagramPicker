@@ -18,5 +18,13 @@
         <action
             android:id="@+id/action_bnv_gallery_to_bnv_camera"
             app:destination="@id/bnv_camera" />
+        <action
+            android:id="@+id/action_bnv_gallery_to_multiSelectFragment"
+            app:destination="@id/multiSelectFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/multiSelectFragment"
+        android:name="ir.shahabazimi.instagrampicker.multiselect.MultiSelectFragment"
+        android:label="fragment_multi_select"
+        tools:layout="@layout/fragment_multi_select" />
 </navigation>
