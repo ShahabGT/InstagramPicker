@@ -1,5 +1,6 @@
 package ir.shahabazimi.instagrampicker.gallery
 
+import android.annotation.SuppressLint
 import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
@@ -94,11 +95,13 @@ class GalleryAdapter(
         diff.submitList(data)
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun multiSelect(enabled: Boolean) {
         selectedPics.clear()
         val data = diff.currentList.toMutableList()
         data.forEach { it.isSelected = false; it.selectable = enabled }
         diff.submitList(data)
+        notifyDataSetChanged()
     }
 
     override fun getItemCount() = diff.currentList.size
