@@ -16,7 +16,6 @@
         android:layout_marginTop="5dp" />
 
     <ImageView
-        android:src="@drawable/shutter_drawable"
         android:id="@+id/thumbnail"
         android:layout_width="@dimen/thumbnail_size"
         android:layout_height="@dimen/thumbnail_size"/>

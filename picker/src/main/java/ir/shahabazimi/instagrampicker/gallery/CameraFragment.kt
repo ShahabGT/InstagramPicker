@@ -14,7 +14,6 @@ import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.*
 import androidx.camera.core.ImageCapture.*
 import androidx.camera.lifecycle.ProcessCameraProvider
@@ -24,13 +23,10 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.NavHostFragment
 import com.google.android.material.appbar.MaterialToolbar
 import com.yalantis.ucrop.UCrop
-import ir.shahabazimi.instagrampicker.InstagramPicker
 import ir.shahabazimi.instagrampicker.R
 import ir.shahabazimi.instagrampicker.classes.Const
 import ir.shahabazimi.instagrampicker.classes.InstaPickerSharedPreference
-import ir.shahabazimi.instagrampicker.classes.Statics
 import ir.shahabazimi.instagrampicker.databinding.FragmentCameraBinding
-import ir.shahabazimi.instagrampicker.filter.FilterActivity
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
@@ -295,10 +291,12 @@ class CameraFragment : Fragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (resultCode == RESULT_OK && requestCode == UCrop.REQUEST_CROP && data != null) {
             val resultUri = UCrop.getOutput(data)
-            FilterActivity.picAddress = resultUri
-            startActivity(Intent(requireContext(), FilterActivity::class.java).apply {
-                putExtra("uri", resultUri)
-            })
+            NavHostFragment.findNavController(this).navigate(
+                R.id.action_bnv_camera_to_filterFragment,
+                Bundle().apply {
+                    putParcelable("pic",resultUri)
+                }
+            )
         }
     }
 

@@ -6,19 +6,14 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
 import android.view.*
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.FragmentActivity
 import androidx.navigation.fragment.NavHostFragment
-import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
-import com.google.android.material.appbar.MaterialToolbar
 import com.yalantis.ucrop.UCrop
 import ir.shahabazimi.instagrampicker.R
 import ir.shahabazimi.instagrampicker.classes.Const
 import ir.shahabazimi.instagrampicker.databinding.FragmentMultiSelectBinding
-import ir.shahabazimi.instagrampicker.filter.FilterActivity
 import java.io.File
 import kotlin.math.abs
 
@@ -101,10 +96,12 @@ class MultiSelectFragment : Fragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (resultCode == Activity.RESULT_OK && requestCode == UCrop.REQUEST_CROP && data != null) {
             val resultUri = UCrop.getOutput(data)
-            FilterActivity.picAddress = resultUri
-            startActivity(Intent(requireContext(), FilterActivity::class.java).apply {
-                putExtra("uri", resultUri)
-            })
+            NavHostFragment.findNavController(this).navigate(
+                R.id.action_multiSelectFragment_to_filterFragment,
+                Bundle().apply {
+                    putParcelable("pic",resultUri)
+                }
+            )
         }
     }
 

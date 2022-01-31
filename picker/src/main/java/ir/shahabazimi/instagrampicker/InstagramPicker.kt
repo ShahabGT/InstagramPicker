@@ -25,7 +25,6 @@ class InstagramPicker (private val activity: Activity) {
 //            }
 //        };
 
-
     fun show(
 
         @NonNull CropXRatio: Int,

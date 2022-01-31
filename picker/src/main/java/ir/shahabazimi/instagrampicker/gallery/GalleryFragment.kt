@@ -29,9 +29,7 @@ import com.yalantis.ucrop.UCrop
 import ir.shahabazimi.instagrampicker.R
 import ir.shahabazimi.instagrampicker.classes.Const
 import ir.shahabazimi.instagrampicker.classes.InstaPickerSharedPreference
-import ir.shahabazimi.instagrampicker.classes.Statics
 import ir.shahabazimi.instagrampicker.databinding.FragmentGalleryBinding
-import ir.shahabazimi.instagrampicker.filter.FilterActivity
 import java.io.File
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
@@ -39,14 +37,10 @@ import java.util.concurrent.Executors
 
 class GalleryFragment : Fragment() {
 
-
     private lateinit var galleryAdapter: GalleryAdapter
-    private var multiSelect = false
     private val data = mutableListOf<GalleryModel>()
     private val selectedPics = mutableListOf<String>()
-
     private lateinit var b: FragmentGalleryBinding
-
     private lateinit var storageExecutor: ExecutorService
     private lateinit var storagePermission: ActivityResultLauncher<String>
 
@@ -148,13 +142,13 @@ class GalleryFragment : Fragment() {
             NavHostFragment.findNavController(this).navigate(R.id.action_bnv_gallery_to_bnv_camera)
         }
         b.galleryMultiselectLayout.setOnClickListener {
-            multiSelect = !multiSelect
+            Const.multiSelect = !Const.multiSelect
             selectedPics.clear()
             val positionView =
                 (b.galleryRecycler.layoutManager as GridLayoutManager).findFirstVisibleItemPosition()
-            b.galleryMultiselectLayout.setBackgroundResource(if (multiSelect) R.drawable.img_bg_selected else R.drawable.img_bg)
+            b.galleryMultiselectLayout.setBackgroundResource(if (Const.multiSelect) R.drawable.img_bg_selected else R.drawable.img_bg)
 
-            galleryAdapter.multiSelect(multiSelect)
+            galleryAdapter.multiSelect(Const.multiSelect)
             b.galleryRecycler.layoutManager?.scrollToPosition(positionView)
         }
 
@@ -189,15 +183,10 @@ class GalleryFragment : Fragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (resultCode == RESULT_OK && requestCode == UCrop.REQUEST_CROP && data != null) {
             val resultUri = UCrop.getOutput(data)
-//            FilterActivity.picAddress = resultUri
-//            startActivity(Intent(requireContext(), FilterActivity::class.java).apply {
-//                putExtra("Uri", resultUri)
-//            })
-
             NavHostFragment.findNavController(this).navigate(
                 R.id.action_bnv_gallery_to_filterFragment,
                 Bundle().apply {
-                    putParcelable("pic",resultUri)
+                    putParcelable("pic", resultUri)
                 }
             )
         }
@@ -207,7 +196,7 @@ class GalleryFragment : Fragment() {
         val id = item.itemId
         val options = UCrop.Options()
         options.setCompressionFormat(Bitmap.CompressFormat.JPEG)
-     //   options.withMaxResultSize(2000, 2000)
+        //   options.withMaxResultSize(2000, 2000)
         options.setToolbarTitle(getString(R.string.instagrampicker_crop_title))
         if (id == R.id.action_next) {
             when {
@@ -226,11 +215,12 @@ class GalleryFragment : Fragment() {
                         .start(requireContext(), this)
                 }
                 selectedPics.size > 1 -> {
-                    NavHostFragment.findNavController(this).navigate(R.id.action_bnv_gallery_to_multiSelectFragment,
-                    Bundle().apply
-                     {
-                         putStringArray("pics",selectedPics.toTypedArray())
-                     })
+                    NavHostFragment.findNavController(this)
+                        .navigate(R.id.action_bnv_gallery_to_multiSelectFragment,
+                            Bundle().apply
+                            {
+                                putStringArray("pics", selectedPics.toTypedArray())
+                            })
                 }
             }
 

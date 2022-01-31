@@ -5,25 +5,25 @@ import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Environment
 import android.provider.MediaStore
 import android.view.*
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.NavHostFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.zomato.photofilters.FilterPack
-import com.zomato.photofilters.imageprocessors.Filter
-import com.zomato.photofilters.utils.ThumbnailItem
-import com.zomato.photofilters.utils.ThumbnailsManager
 import ir.shahabazimi.instagrampicker.R
+import ir.shahabazimi.instagrampicker.classes.Const
 import ir.shahabazimi.instagrampicker.databinding.FragmentFilterBinding
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import java.io.ByteArrayOutputStream
+import java.io.File
+import java.io.FileOutputStream
 
 
 class FilterFragment : Fragment() {
@@ -36,6 +36,7 @@ class FilterFragment : Fragment() {
     private lateinit var picBitmap: Bitmap
     private val thumbnails = mutableListOf<FilterItem>()
     private lateinit var filtersAdapter: FiltersAdapter
+    private lateinit var finalImage: Bitmap
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -73,7 +74,7 @@ class FilterFragment : Fragment() {
 
     private fun init() {
         picBitmap = getBitmap(requireArguments().getParcelable("pic")!!)
-
+        finalImage = picBitmap
         Glide.with(this)
             .load(picBitmap)
             .fitCenter()
@@ -82,8 +83,18 @@ class FilterFragment : Fragment() {
 
 
         filtersAdapter = FiltersAdapter {
+            finalImage = it.filter.processFilter(picBitmap)
             Glide.with(this)
-                .load(it.filter.processFilter(Bitmap.createScaledBitmap(picBitmap, 1024, 1024, false)))
+                .load(
+                    it.filter.processFilter(
+                        Bitmap.createScaledBitmap(
+                            picBitmap,
+                            1024,
+                            1024,
+                            false
+                        )
+                    )
+                )
                 .fitCenter()
                 .into(b.filtersPreview)
         }
@@ -116,6 +127,33 @@ class FilterFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.action_next -> {
+                if (!Const.multiSelect) {
+
+                    val file = File.createTempFile(
+                        Const.getCurrentDate(),
+                        ".jpeg",
+                        requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+                    )
+                    val bos = ByteArrayOutputStream()
+                    finalImage.run {
+                        CoroutineScope(Dispatchers.IO).launch {
+                            compress(Bitmap.CompressFormat.JPEG, 100, bos)
+                        }
+                    }
+
+                    val fileOutputStream = FileOutputStream(file)
+                    fileOutputStream.write(bos.toByteArray())
+                    fileOutputStream.close()
+                    fileOutputStream.flush()
+
+
+                    val address = Uri.fromFile(file).toString()
+
+
+                    requireActivity().finish()
+                }else{
+
+                }
                 return true
             }
             android.R.id.home -> {
