@@ -80,11 +80,6 @@ public class FilterActivity extends AppCompatActivity implements FiltersListFrag
 
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-    }
-
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         filtersListFragment = new FiltersListFragment();

@@ -46,5 +46,6 @@ class InstagramPicker (private val activity: Activity) {
 
         activity.startActivity(Intent(activity, SelectActivity::class.java))
 
+
     }
 }

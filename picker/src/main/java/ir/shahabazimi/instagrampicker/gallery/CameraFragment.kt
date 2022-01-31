@@ -281,7 +281,7 @@ class CameraFragment : Fragment() {
         val options = UCrop.Options()
         options.setToolbarTitle(getString(R.string.instagrampicker_crop_title))
         options.setCompressionFormat(Bitmap.CompressFormat.JPEG)
-        options.withMaxResultSize(2000, 2000)
+     //   options.withMaxResultSize(2000, 2000)
         UCrop.of(
             Uri.fromFile(f),
             Uri.fromFile(File(requireActivity().cacheDir, Const.getCurrentDate()))

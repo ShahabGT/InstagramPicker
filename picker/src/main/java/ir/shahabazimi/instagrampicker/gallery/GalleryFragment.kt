@@ -189,10 +189,17 @@ class GalleryFragment : Fragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (resultCode == RESULT_OK && requestCode == UCrop.REQUEST_CROP && data != null) {
             val resultUri = UCrop.getOutput(data)
-            FilterActivity.picAddress = resultUri
-            startActivity(Intent(requireContext(), FilterActivity::class.java).apply {
-                putExtra("Uri", resultUri)
-            })
+//            FilterActivity.picAddress = resultUri
+//            startActivity(Intent(requireContext(), FilterActivity::class.java).apply {
+//                putExtra("Uri", resultUri)
+//            })
+
+            NavHostFragment.findNavController(this).navigate(
+                R.id.action_bnv_gallery_to_filterFragment,
+                Bundle().apply {
+                    putParcelable("pic",resultUri)
+                }
+            )
         }
     }
 
@@ -200,7 +207,7 @@ class GalleryFragment : Fragment() {
         val id = item.itemId
         val options = UCrop.Options()
         options.setCompressionFormat(Bitmap.CompressFormat.JPEG)
-        options.withMaxResultSize(2000, 2000)
+     //   options.withMaxResultSize(2000, 2000)
         options.setToolbarTitle(getString(R.string.instagrampicker_crop_title))
         if (id == R.id.action_next) {
             when {
