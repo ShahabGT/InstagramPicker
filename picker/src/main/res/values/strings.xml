@@ -40,8 +40,6 @@
 
     <color name="filter_label_normal">#8A8889</color>
     <color name="filter_label_selected">#221F20</color>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 
 </resources>

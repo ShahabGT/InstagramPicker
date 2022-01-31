@@ -57,6 +57,10 @@ dependencies {
     implementation 'androidx.navigation:navigation-fragment-ktx:2.5.0-alpha01'
     implementation 'androidx.navigation:navigation-ui-ktx:2.5.0-alpha01'
 
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.0-native-mt'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-reactor:1.6.0-native-mt'
+
+
 }
 repositories {
     mavenCentral()

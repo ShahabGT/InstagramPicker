@@ -26,7 +26,7 @@ public class ThumbnailsAdapter extends RecyclerView.Adapter<ThumbnailsAdapter.My
     static class MyViewHolder extends RecyclerView.ViewHolder {
         private final ImageView thumbnail;
         private final TextView filterName;
-         MyViewHolder(View view) {
+        MyViewHolder(View view) {
             super(view);
             filterName = view.findViewById(R.id.filter_name);
             thumbnail = view.findViewById(R.id.thumbnail);
