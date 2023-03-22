@@ -11,26 +11,11 @@ import kotlin.math.abs
 class InstagramPicker (private val activity: Activity) {
 
 
-
-
-//        private final BroadcastReceiver br = new BroadcastReceiver()
-//        {
-//            @Override
-//            public void onReceive(Context context, Intent intent) {
-//                if (multiSelect)
-//                    mListener.selectedPics(addresses);
-//                else
-//                    sListener.selectedPic(addresses.get(0));
-//                activity.unregisterReceiver(br);
-//            }
-//        };
-
     fun show(
-
-        @NonNull CropXRatio: Int,
-        @NonNull CropYRatio: Int,
+        CropXRatio: Int,
+        CropYRatio: Int,
         numberOfPictures: Int = 1,
-        @NonNull selectedImages:(List<String>)->Unit
+        selectedImages:(List<String>)->Unit
     ) {
         val count = when {
             numberOfPictures <= 0 -> 1

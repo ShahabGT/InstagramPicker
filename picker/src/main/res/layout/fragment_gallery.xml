@@ -13,7 +13,6 @@
         android:id="@+id/gallery_view_container"
         android:layout_width="match_parent"
         android:layout_height="250dp"
-        app:layout_constraintBottom_toBottomOf="@id/guideline"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -70,12 +69,11 @@
                 android:focusable="true"
                 android:gravity="center"
                 android:orientation="horizontal"
-                android:paddingHorizontal="6dp"
+                android:paddingHorizontal="12dp"
                 android:paddingVertical="2dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/gallery_camera"
                 app:layout_constraintTop_toTopOf="parent">
-
 
                 <ImageView
                     android:id="@+id/gallery_multiselect"

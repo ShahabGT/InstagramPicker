@@ -12,6 +12,4 @@ class SharedViewModel : ViewModel() {
         mutableResult.value = date
     }
 
-
-
 }

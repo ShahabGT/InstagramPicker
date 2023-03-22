@@ -5,12 +5,17 @@ import androidx.appcompat.app.AppCompatActivity
 import ir.shahabazimi.instagrampicker.databinding.ActivitySelectBinding
 
 class SelectActivity : AppCompatActivity() {
-    private lateinit var b: ActivitySelectBinding
+
+    private var b: ActivitySelectBinding? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         b = ActivitySelectBinding.inflate(layoutInflater)
-        setContentView(b.root)
-        setSupportActionBar(b.selectToolbar)
+        setContentView(b?.root)
+    }
 
+    override fun onDestroy() {
+        b = null
+        super.onDestroy()
     }
 }

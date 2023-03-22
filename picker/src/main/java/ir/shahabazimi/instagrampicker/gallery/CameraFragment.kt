@@ -216,7 +216,7 @@ class CameraFragment : Fragment() {
                                     )
                                     b.cFocus.translationX = event.x - (b.cFocus.width / 2)
                                     b.cFocus.translationY = event.y - (b.cFocus.height / 2)
-                                } catch (e: CameraInfoUnavailableException) {
+                                } catch (_: CameraInfoUnavailableException) {
                                 }
                                 true
                             }
@@ -224,7 +224,7 @@ class CameraFragment : Fragment() {
                         }
                     }
                 }
-            } catch (exc: Exception) {
+            } catch (_: Exception) {
             }
 
         }, ContextCompat.getMainExecutor(requireActivity()))
@@ -277,7 +277,7 @@ class CameraFragment : Fragment() {
         val options = UCrop.Options()
         options.setToolbarTitle(getString(R.string.instagrampicker_crop_title))
         options.setCompressionFormat(Bitmap.CompressFormat.JPEG)
-     //   options.withMaxResultSize(2000, 2000)
+        //   options.withMaxResultSize(2000, 2000)
         UCrop.of(
             Uri.fromFile(f),
             Uri.fromFile(File(requireActivity().cacheDir, Const.getCurrentDate()))
@@ -288,13 +288,14 @@ class CameraFragment : Fragment() {
 
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (resultCode == RESULT_OK && requestCode == UCrop.REQUEST_CROP && data != null) {
             val resultUri = UCrop.getOutput(data)
             NavHostFragment.findNavController(this).navigate(
                 R.id.action_bnv_camera_to_filterFragment,
                 Bundle().apply {
-                    putParcelable("pic",resultUri)
+                    putParcelable("pic", resultUri)
                 }
             )
         }

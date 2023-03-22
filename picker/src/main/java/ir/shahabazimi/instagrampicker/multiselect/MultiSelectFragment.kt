@@ -93,6 +93,7 @@ class MultiSelectFragment : Fragment() {
 
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (resultCode == Activity.RESULT_OK && requestCode == UCrop.REQUEST_CROP && data != null) {
             val resultUri = UCrop.getOutput(data)

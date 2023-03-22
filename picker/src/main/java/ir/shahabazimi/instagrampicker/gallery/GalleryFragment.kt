@@ -49,8 +49,7 @@ class GalleryFragment : Fragment() {
         super.onCreate(savedInstanceState)
         storageExecutor = Executors.newSingleThreadExecutor()
         storagePermission = registerForActivityResult(ActivityResultContracts.RequestPermission()) {
-            if (it)
-                init()
+            if (it) init()
         }
     }
 
@@ -180,6 +179,7 @@ class GalleryFragment : Fragment() {
 
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (resultCode == RESULT_OK && requestCode == UCrop.REQUEST_CROP && data != null) {
             val resultUri = UCrop.getOutput(data)
@@ -192,11 +192,11 @@ class GalleryFragment : Fragment() {
         }
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val id = item.itemId
         val options = UCrop.Options()
         options.setCompressionFormat(Bitmap.CompressFormat.JPEG)
-        //   options.withMaxResultSize(2000, 2000)
         options.setToolbarTitle(getString(R.string.instagrampicker_crop_title))
         if (id == R.id.action_next) {
             when {
@@ -230,6 +230,7 @@ class GalleryFragment : Fragment() {
         return super.onOptionsItemSelected(item)
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.menu_main, menu)
         super.onCreateOptionsMenu(menu, inflater)
