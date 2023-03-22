@@ -1,4 +1,4 @@
-package ir.shahabazimi.instagrampicker.classes
+package ir.shahabazimi.instagrampicker.utils
 
 import java.text.SimpleDateFormat
 import java.util.*
@@ -12,5 +12,8 @@ object Const {
     lateinit var addresses :MutableList<String>
     const val INTENT_FILTER_ACTION_NAME = "instagrampicker_refresh"
     fun getCurrentDate(): String =SimpleDateFormat("yyyy-MM-dd-HH-mm-ss-SSS", Locale.US).format(Date())
+
+    const val FILENAME_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSS"
+
 
 }

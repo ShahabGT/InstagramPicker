@@ -1,13 +1,12 @@
-package ir.shahabazimi.instagrampicker.gallery
+package ir.shahabazimi.instagrampicker.fragments
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.app.Activity.RESULT_OK
 import android.content.ContentUris
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import android.provider.Settings
@@ -19,48 +18,43 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.NavHostFragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.google.android.material.appbar.MaterialToolbar
-import com.yalantis.ucrop.UCrop
 import ir.shahabazimi.instagrampicker.R
-import ir.shahabazimi.instagrampicker.classes.Const
-import ir.shahabazimi.instagrampicker.classes.InstaPickerSharedPreference
+import ir.shahabazimi.instagrampicker.adapters.GalleryAdapter
 import ir.shahabazimi.instagrampicker.databinding.FragmentGalleryBinding
-import java.io.File
+import ir.shahabazimi.instagrampicker.models.GalleryModel
+import ir.shahabazimi.instagrampicker.utils.*
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
 
-class GalleryFragment : Fragment() {
+/**
+ * @Author: Shahab Azimi
+ * @Date: 2023 - 03 - 22
+ **/
+class GalleryFragment : BaseFragment<FragmentGalleryBinding>() {
+
+    private lateinit var viewModel: GalleryViewModel
 
     private lateinit var galleryAdapter: GalleryAdapter
-    private val data = mutableListOf<GalleryModel>()
-    private val selectedPics = mutableListOf<String>()
-    private lateinit var b: FragmentGalleryBinding
+    override fun bindView(inflater: LayoutInflater, container: ViewGroup?) =
+        FragmentGalleryBinding.inflate(inflater, container, false)
+
     private lateinit var storageExecutor: ExecutorService
     private lateinit var storagePermission: ActivityResultLauncher<String>
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        viewModel = ViewModelProvider(this)[GalleryViewModel::class.java]
         storageExecutor = Executors.newSingleThreadExecutor()
         storagePermission = registerForActivityResult(ActivityResultContracts.RequestPermission()) {
             if (it) init()
         }
-    }
-
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        b = FragmentGalleryBinding.inflate(inflater, container, false)
-        return b.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -71,28 +65,25 @@ class GalleryFragment : Fragment() {
             it.setDisplayHomeAsUpEnabled(false)
             it.setDisplayShowHomeEnabled(false)
         }
-        setHasOptionsMenu(true)
         setupPermissions()
-
     }
 
     override fun onResume() {
         super.onResume()
         requireActivity().findViewById<MaterialToolbar>(R.id.select_toolbar).visibility =
             View.VISIBLE
-
     }
 
     private fun setupPermissions() {
         val permission = ContextCompat.checkSelfPermission(
             requireContext(),
-            Manifest.permission.READ_EXTERNAL_STORAGE
+            externalStoragePermission()
         )
 
         if (permission != PackageManager.PERMISSION_GRANTED) {
             if (ActivityCompat.shouldShowRequestPermissionRationale(
                     requireActivity(),
-                    Manifest.permission.READ_EXTERNAL_STORAGE
+                    externalStoragePermission()
                 )
             ) {
                 val builder = AlertDialog.Builder(requireContext())
@@ -102,7 +93,7 @@ class GalleryFragment : Fragment() {
                 builder.setPositiveButton(
                     getString(R.string.storage_permission_positive)
                 ) { _, _ ->
-                    storagePermission.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
+                    storagePermission.launch(externalStoragePermission())
                 }
                 builder.setNegativeButton(getString(R.string.storage_permission_negative)) { a, _ ->
                     a.dismiss()
@@ -111,7 +102,7 @@ class GalleryFragment : Fragment() {
                 val dialog = builder.create()
                 dialog.show()
             } else if (!InstaPickerSharedPreference(requireContext()).getStoragePermission()) {
-                storagePermission.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
+                storagePermission.launch(externalStoragePermission())
                 InstaPickerSharedPreference(requireContext()).setStoragePermission()
             } else {
                 Toast.makeText(
@@ -131,40 +122,37 @@ class GalleryFragment : Fragment() {
         }
     }
 
-    private fun init() {
-        data.clear()
-        selectedPics.clear()
-        if (Const.numberOfPictures == 1) {
-            b.galleryMultiselect.visibility = View.GONE
-        }
-        b.galleryCamera.setOnClickListener {
-            NavHostFragment.findNavController(this).navigate(R.id.action_bnv_gallery_to_bnv_camera)
-        }
-        b.galleryMultiselectLayout.setOnClickListener {
+    private fun init() = with(binding) {
+        viewModel.clearData()
+        viewModel.clearSelectedPics()
+
+        galleryMultiselect.visibilityState(Const.numberOfPictures != 1)
+
+        galleryCamera.setOnClickListener { navigate(R.id.action_bnv_gallery_to_bnv_camera) }
+
+        galleryMultiselectLayout.setOnClickListener {
             Const.multiSelect = !Const.multiSelect
-            selectedPics.clear()
+            viewModel.clearSelectedPics()
             val positionView =
-                (b.galleryRecycler.layoutManager as GridLayoutManager).findFirstVisibleItemPosition()
-            b.galleryMultiselectLayout.setBackgroundResource(if (Const.multiSelect) R.drawable.img_bg_selected else R.drawable.img_bg)
-
+                (galleryRecycler.layoutManager as GridLayoutManager).findFirstVisibleItemPosition()
+            galleryMultiselectLayout.setBackgroundResource(if (Const.multiSelect) R.drawable.img_bg_selected else R.drawable.img_bg)
             galleryAdapter.multiSelect(Const.multiSelect)
-            b.galleryRecycler.layoutManager?.scrollToPosition(positionView)
+            galleryRecycler.layoutManager?.scrollToPosition(positionView)
         }
-
-
-
 
         galleryAdapter = GalleryAdapter { addresses ->
             if (addresses.isNotEmpty()) {
-                selectedPics.clear()
-                selectedPics.addAll(addresses)
-                Glide.with(this)
-                    .load(Uri.parse(selectedPics.last()))
+                viewModel.clearSelectedPics()
+                viewModel.addAllSelectedPics(addresses)
+                Glide.with(this@GalleryFragment)
+                    .load(Uri.parse(viewModel.lastSelectedPic()))
                     .fitCenter()
-                    .into(b.galleryView)
+                    .into(galleryView)
+
+                appbarLayout.setExpanded(true, true)
             }
         }
-        b.galleryRecycler.apply {
+        galleryRecycler.apply {
             layoutManager = GridLayoutManager(
                 requireContext(),
                 4,
@@ -179,71 +167,12 @@ class GalleryFragment : Fragment() {
 
     }
 
-    @Deprecated("Deprecated in Java")
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (resultCode == RESULT_OK && requestCode == UCrop.REQUEST_CROP && data != null) {
-            val resultUri = UCrop.getOutput(data)
-            NavHostFragment.findNavController(this).navigate(
-                R.id.action_bnv_gallery_to_filterFragment,
-                Bundle().apply {
-                    putParcelable("pic", resultUri)
-                }
-            )
-        }
-    }
-
-    @Deprecated("Deprecated in Java")
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        val id = item.itemId
-        val options = UCrop.Options()
-        options.setCompressionFormat(Bitmap.CompressFormat.JPEG)
-        options.setToolbarTitle(getString(R.string.instagrampicker_crop_title))
-        if (id == R.id.action_next) {
-            when {
-                selectedPics.size == 1 -> {
-                    UCrop.of(
-                        Uri.parse(selectedPics[0]),
-                        Uri.fromFile(
-                            File(
-                                requireActivity().cacheDir,
-                                Const.getCurrentDate()
-                            )
-                        )
-                    )
-                        .withAspectRatio(Const.cropXRatio, Const.cropYRatio)
-                        .withOptions(options)
-                        .start(requireContext(), this)
-                }
-                selectedPics.size > 1 -> {
-                    NavHostFragment.findNavController(this)
-                        .navigate(R.id.action_bnv_gallery_to_multiSelectFragment,
-                            Bundle().apply
-                            {
-                                putStringArray("pics", selectedPics.toTypedArray())
-                            })
-                }
-            }
-
-            return true
-        }
-
-        return super.onOptionsItemSelected(item)
-    }
-
-    @Deprecated("Deprecated in Java")
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.menu_main, menu)
-        super.onCreateOptionsMenu(menu, inflater)
-    }
-
     @SuppressLint("Range")
     private fun getPicturePaths() {
         val allImagesUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
         val projection = Array(2) {
-            if (it == 0)
-                MediaStore.Images.ImageColumns.DATA
-            else
-                MediaStore.Images.Media._ID
+            if (it == 0) MediaStore.Images.ImageColumns.DATA
+            else MediaStore.Images.Media._ID
         }
 
         val cursor = requireActivity().contentResolver.query(
@@ -261,20 +190,19 @@ class GalleryFragment : Fragment() {
                     MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
                     cursor.getLong(cursor.getColumnIndex(MediaStore.Images.Media._ID))
                 ).toString()
-                val model = GalleryModel(dataPath, selectable = false, isSelected = false)
-                data.add(0, model)
+                val data = GalleryModel(dataPath, selectable = false, isSelected = false)
+                viewModel.addData(model = data)
             } while (cursor.moveToNext())
 
-            galleryAdapter.update(data)
+            galleryAdapter.update(viewModel.getData())
 
-            if (data[0].address.isNotEmpty()) {
-                selectedPics.clear()
-                selectedPics.add(data[0].address)
+            if (viewModel.getData().first().address.isNotEmpty()) {
+                viewModel.clearSelectedPics()
+                viewModel.addSelectedPic(pic = viewModel.getData().first().address)
                 Glide.with(requireContext())
-                    .load(Uri.parse(data[0].address))
+                    .load(Uri.parse(viewModel.getData().first().address))
                     .fitCenter()
-                    .into(b.galleryView)
-
+                    .into(binding.galleryView)
             }
             cursor.close()
         }

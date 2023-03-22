@@ -1,11 +1,9 @@
-package ir.shahabazimi.instagrampicker.gallery
+package ir.shahabazimi.instagrampicker.fragments
 
 import android.Manifest.permission.CAMERA
 import android.annotation.SuppressLint
-import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
@@ -19,34 +17,26 @@ import androidx.camera.core.ImageCapture.*
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.NavHostFragment
 import com.google.android.material.appbar.MaterialToolbar
-import com.yalantis.ucrop.UCrop
 import ir.shahabazimi.instagrampicker.R
-import ir.shahabazimi.instagrampicker.classes.Const
-import ir.shahabazimi.instagrampicker.classes.InstaPickerSharedPreference
 import ir.shahabazimi.instagrampicker.databinding.FragmentCameraBinding
+import ir.shahabazimi.instagrampicker.utils.Const.FILENAME_FORMAT
+import ir.shahabazimi.instagrampicker.utils.InstaPickerSharedPreference
+import ir.shahabazimi.instagrampicker.utils.popBackStack
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
-enum class FlashMode {
-    FLASH_ON,
-    FLASH_OFF,
-    FLASH_AUTO
-}
 
-class CameraFragment : Fragment() {
-
-    companion object {
-        private const val FILENAME_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSS"
-    }
+/**
+ * @Author: Shahab Azimi
+ * @Date: 2023 - 03 - 22
+ **/
+class CameraFragment : BaseFragment<FragmentCameraBinding>() {
 
     private lateinit var cameraPermission: ActivityResultLauncher<String>
-    private lateinit var b: FragmentCameraBinding
     private var isFront = false
     private var imageCapture: ImageCapture? = null
     private var flash = FlashMode.FLASH_OFF
@@ -55,25 +45,15 @@ class CameraFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setHasOptionsMenu(false)
         cameraExecutor = Executors.newSingleThreadExecutor()
         cameraPermission = registerForActivityResult(ActivityResultContracts.RequestPermission()) {
-            if (it)
-                initCamera()
-            else
-                NavHostFragment.findNavController(this).popBackStack()
+            if (it) initCamera()
+            else popBackStack()
         }
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        b = FragmentCameraBinding.inflate(inflater, container, false)
-        return b.root
-    }
-
+    override fun bindView(inflater: LayoutInflater, container: ViewGroup?) =
+        FragmentCameraBinding.inflate(inflater, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -123,7 +103,7 @@ class CameraFragment : Fragment() {
                     data = Uri.fromParts("package", requireActivity().packageName, null)
                 }
                 )
-                NavHostFragment.findNavController(this).popBackStack()
+                popBackStack()
             }
         } else {
             initCamera()
@@ -131,14 +111,14 @@ class CameraFragment : Fragment() {
     }
 
 
-    private fun initCamera() {
+    private fun initCamera() = with(binding) {
         startCamera(CameraSelector.DEFAULT_BACK_CAMERA)
-        b.cCapture.setOnClickListener { takePhoto() }
+        cCapture.setOnClickListener { takePhoto() }
 
-        b.cClose.setOnClickListener { NavHostFragment.findNavController(this).popBackStack() }
+        cClose.setOnClickListener { popBackStack() }
 
-        b.cChange.setOnClickListener {
-            b.cFocus.visibility = View.INVISIBLE
+        cChange.setOnClickListener {
+            cFocus.visibility = View.INVISIBLE
             isFront = if (isFront) {
                 startCamera(CameraSelector.DEFAULT_BACK_CAMERA)
                 false
@@ -148,19 +128,19 @@ class CameraFragment : Fragment() {
             }
         }
 
-        b.cFlash.setOnClickListener {
+        cFlash.setOnClickListener {
             when (flash) {
                 FlashMode.FLASH_OFF -> {
                     flash = FlashMode.FLASH_AUTO
-                    b.cFlash.setImageResource(R.drawable.vector_flash_auto)
+                    cFlash.setImageResource(R.drawable.vector_flash_auto)
                 }
                 FlashMode.FLASH_AUTO -> {
                     flash = FlashMode.FLASH_ON
-                    b.cFlash.setImageResource(R.drawable.vector_flash_on)
+                    cFlash.setImageResource(R.drawable.vector_flash_on)
                 }
                 FlashMode.FLASH_ON -> {
                     flash = FlashMode.FLASH_OFF
-                    b.cFlash.setImageResource(R.drawable.vector_flash_off)
+                    cFlash.setImageResource(R.drawable.vector_flash_off)
                 }
             }
 
@@ -171,16 +151,15 @@ class CameraFragment : Fragment() {
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    private fun startCamera(cameraSelector: CameraSelector) {
+    private fun startCamera(cameraSelector: CameraSelector) = with(binding) {
         val cameraProviderFuture = ProcessCameraProvider.getInstance(requireActivity())
         cameraProviderFuture.addListener({
             val cameraProvider: ProcessCameraProvider = cameraProviderFuture.get()
 
             val preview = Preview.Builder()
                 .build()
-                .also {
-                    it.setSurfaceProvider(b.cViewFinder.surfaceProvider)
-                }
+                .also { it.setSurfaceProvider(cViewFinder.surfaceProvider) }
+
             imageCapture = Builder()
                 .build()
             try {
@@ -190,18 +169,18 @@ class CameraFragment : Fragment() {
                     requireActivity(), cameraSelector, preview, imageCapture
                 )
 
-                b.cViewFinder.afterMeasured {
-                    b.cViewFinder.setOnTouchListener { _, event ->
+                cViewFinder.afterMeasured {
+                    cViewFinder.setOnTouchListener { _, event ->
                         return@setOnTouchListener when (event.action) {
                             MotionEvent.ACTION_DOWN -> {
                                 true
                             }
                             MotionEvent.ACTION_UP -> {
-                                b.cFocus.visibility = View.VISIBLE
+                                cFocus.visibility = View.VISIBLE
                                 val factory: MeteringPointFactory =
                                     SurfaceOrientedMeteringPointFactory(
-                                        b.cViewFinder.width.toFloat(),
-                                        b.cViewFinder.height.toFloat()
+                                        cViewFinder.width.toFloat(),
+                                        cViewFinder.height.toFloat()
                                     )
                                 val autoFocusPoint = factory.createPoint(event.x, event.y)
                                 try {
@@ -214,8 +193,8 @@ class CameraFragment : Fragment() {
                                             disableAutoCancel()
                                         }.build()
                                     )
-                                    b.cFocus.translationX = event.x - (b.cFocus.width / 2)
-                                    b.cFocus.translationY = event.y - (b.cFocus.height / 2)
+                                    cFocus.translationX = event.x - (cFocus.width / 2)
+                                    cFocus.translationY = event.y - (cFocus.height / 2)
                                 } catch (_: CameraInfoUnavailableException) {
                                 }
                                 true
@@ -267,39 +246,11 @@ class CameraFragment : Fragment() {
                 }
 
                 override fun onImageSaved(output: OutputFileResults) {
-                    startCropping(photoFile)
+                    //todo start cropping photoFile
                 }
             })
     }
 
-    private fun startCropping(f: File) {
-
-        val options = UCrop.Options()
-        options.setToolbarTitle(getString(R.string.instagrampicker_crop_title))
-        options.setCompressionFormat(Bitmap.CompressFormat.JPEG)
-        //   options.withMaxResultSize(2000, 2000)
-        UCrop.of(
-            Uri.fromFile(f),
-            Uri.fromFile(File(requireActivity().cacheDir, Const.getCurrentDate()))
-        )
-            .withAspectRatio(Const.cropXRatio, Const.cropYRatio)
-            .withOptions(options)
-            .start(requireContext(), this)
-
-    }
-
-    @Deprecated("Deprecated in Java")
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (resultCode == RESULT_OK && requestCode == UCrop.REQUEST_CROP && data != null) {
-            val resultUri = UCrop.getOutput(data)
-            NavHostFragment.findNavController(this).navigate(
-                R.id.action_bnv_camera_to_filterFragment,
-                Bundle().apply {
-                    putParcelable("pic", resultUri)
-                }
-            )
-        }
-    }
 
     private fun getOutputDirectory(): File {
         val mediaDir = requireActivity().externalMediaDirs.firstOrNull()?.let {
@@ -314,4 +265,10 @@ class CameraFragment : Fragment() {
         cameraExecutor.shutdown()
     }
 
+}
+
+enum class FlashMode {
+    FLASH_ON,
+    FLASH_OFF,
+    FLASH_AUTO
 }

@@ -1,4 +1,4 @@
-package ir.shahabazimi.instagrampicker.gallery
+package ir.shahabazimi.instagrampicker
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity

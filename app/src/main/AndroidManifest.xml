@@ -10,13 +10,8 @@
         android:supportsRtl="false"
         tools:replace="android:supportsRtl"
         android:theme="@style/AppTheme">
-        <activity android:name="ir.shahabazimi.instagrampicker.gallery.SelectActivity" />
-        <activity android:name="ir.shahabazimi.instagrampicker.filter.FilterActivity" />
-        <activity android:name="ir.shahabazimi.instagrampicker.gallery.MultiSelectActivity"/>
-        <activity
-            android:name="com.yalantis.ucrop.UCropActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+        <activity android:name="ir.shahabazimi.instagrampicker.SelectActivity" />
+
 
         <activity
             android:exported="true"

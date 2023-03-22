@@ -1,4 +1,4 @@
-package ir.shahabazimi.instagrampicker.gallery
+package ir.shahabazimi.instagrampicker.adapters
 
 import android.annotation.SuppressLint
 import android.net.Uri
@@ -9,31 +9,33 @@ import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import ir.shahabazimi.instagrampicker.classes.Const
 import ir.shahabazimi.instagrampicker.databinding.RowGalleryPicsBinding
+import ir.shahabazimi.instagrampicker.models.GalleryModel
+import ir.shahabazimi.instagrampicker.utils.Const
+import ir.shahabazimi.instagrampicker.utils.visibilityState
 
+/**
+ * @Author: Shahab Azimi
+ * @Date: 2023 - 03 - 22
+ **/
 class GalleryAdapter(
     private val select: (List<String>) -> Unit
 ) : RecyclerView.Adapter<GalleryAdapter.ViewHolder>() {
 
     private val selectedPics = mutableListOf<String>()
 
-
     private val diffCallback = object : DiffUtil.ItemCallback<GalleryModel>() {
-        override fun areItemsTheSame(oldItem: GalleryModel, newItem: GalleryModel): Boolean {
-            return oldItem == newItem
-        }
+        override fun areItemsTheSame(oldItem: GalleryModel, newItem: GalleryModel) =
+            oldItem == newItem
 
-        override fun areContentsTheSame(oldItem: GalleryModel, newItem: GalleryModel): Boolean {
-            return oldItem.address == newItem.address && oldItem.isSelected == newItem.isSelected && oldItem.selectable == newItem.selectable
-        }
+        override fun areContentsTheSame(oldItem: GalleryModel, newItem: GalleryModel) =
+            oldItem.address == newItem.address && oldItem.isSelected == newItem.isSelected && oldItem.selectable == newItem.selectable
+
     }
 
     private val diff = AsyncListDiffer(this, diffCallback)
 
     inner class ViewHolder(private val v: RowGalleryPicsBinding) : RecyclerView.ViewHolder(v.root) {
-
-
         fun bind(model: GalleryModel) {
             Glide.with(v.rowGalleryPic)
                 .load(Uri.parse(model.address))
@@ -41,11 +43,8 @@ class GalleryAdapter(
                 .centerCrop()
                 .into(v.rowGalleryPic)
 
-            if (model.selectable && model.isSelected) {
-                v.rowGallerySelect.visibility = View.VISIBLE
-            } else
-                v.rowGallerySelect.visibility = View.GONE
 
+            v.rowGallerySelect.visibilityState(model.selectable && model.isSelected)
 
             v.root.setOnClickListener {
                 if (Const.numberOfPictures > 1 && model.selectable) {
@@ -56,7 +55,6 @@ class GalleryAdapter(
                             selectedPics.remove(model.address)
                         }
                     } else {
-
                         model.isSelected = !model.isSelected
                         if (model.isSelected) {
                             selectedPics.add(model.address)
@@ -68,10 +66,9 @@ class GalleryAdapter(
                     }
                     select(selectedPics)
 
-                } else
+                } else {
                     select(listOf(model.address))
-
-
+                }
             }
         }
 
@@ -87,13 +84,10 @@ class GalleryAdapter(
         )
 
     override fun onBindViewHolder(h: ViewHolder, position: Int) {
-        val model = diff.currentList[position]
-        h.bind(model)
+        h.bind(diff.currentList[position])
     }
 
-    fun update(data: List<GalleryModel>) {
-        diff.submitList(data)
-    }
+    fun update(data: List<GalleryModel>) = diff.submitList(data)
 
     @SuppressLint("NotifyDataSetChanged")
     fun multiSelect(enabled: Boolean) {

@@ -7,10 +7,10 @@
     android:layout_height="match_parent"
     android:animateLayoutChanges="true"
     android:background="@android:color/background_light"
-    tools:context=".gallery.GalleryFragment">
+    tools:context=".fragments.GalleryFragment">
 
     <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/gallery_view_container"
+        android:id="@+id/appbarLayout"
         android:layout_width="match_parent"
         android:layout_height="250dp"
         app:layout_constraintEnd_toEndOf="parent"

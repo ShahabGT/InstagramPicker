@@ -2,9 +2,7 @@ package ir.shahabazimi.instagrampicker
 
 import android.app.Activity
 import android.content.Intent
-import androidx.annotation.NonNull
-import ir.shahabazimi.instagrampicker.classes.Const
-import ir.shahabazimi.instagrampicker.gallery.SelectActivity
+import ir.shahabazimi.instagrampicker.utils.Const
 import kotlin.math.abs
 
 

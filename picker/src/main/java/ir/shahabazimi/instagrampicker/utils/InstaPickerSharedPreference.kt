@@ -1,4 +1,4 @@
-package ir.shahabazimi.instagrampicker.classes
+package ir.shahabazimi.instagrampicker.utils
 
 import android.content.Context
 import androidx.core.content.edit
